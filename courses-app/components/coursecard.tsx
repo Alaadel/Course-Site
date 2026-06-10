@@ -1,4 +1,4 @@
-import Course from "@/data/Course";
+import Course from "@/types/Course";
 
 export default function CourseCard({course}: {course: Course}) {
     return (
