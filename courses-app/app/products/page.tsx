@@ -1,20 +1,14 @@
-import Link from "next/link";
+import SearchProducts from "@/components/SearchProducts";
+import SearchProductsContext from "@/store/SearchProductsContext";
 
 export function Products() {
     return (
         <>
-            <h1>Products Page</h1>
-            <Link href="/">Go back to Home</Link>
-
-            <input type="text" placeholder="Search products..." />
-            <input type="text" placeholder="Tags ..." />
-            
-            <input type="number" placeholder="Price from ..." />
-            <input type="number" placeholder="Price to ..." />
-
-            <button>Search</button>
-
-            
+            <SearchProductsContext>
+                <SearchProducts />
+                <header>Showing {showCount} of {totalCount} products</header>
+                
+            </SearchProductsContext>
         </>
     );
 }
