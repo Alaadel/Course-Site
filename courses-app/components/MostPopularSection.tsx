@@ -1,4 +1,4 @@
-import { getMostPopularCourses } from "@/lib/server";
+import { getMostPopularCourses } from "@/lib/courses";
 import CourseList from "./CourseList";
 
 export default function MostPopularSection() {

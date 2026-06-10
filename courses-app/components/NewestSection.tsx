@@ -1,4 +1,4 @@
-import { getNewestCourses } from "@/lib/server";
+import { getNewestCourses } from "@/lib/courses";
 import CourseList from "./CourseList";
 
 export default function NewestSection() {

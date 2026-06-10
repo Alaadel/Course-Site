@@ -1,6 +1,6 @@
 'use client';
 
-import { getSearchCourses } from "@/lib/server";
+import { getSearchCourses } from "@/lib/courses";
 import Course from "@/types/Course";
 import Link from "next/link";
 import { useState } from "react";
