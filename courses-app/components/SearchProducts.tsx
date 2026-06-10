@@ -1,3 +1,5 @@
+'use client';
+
 import { getSearchCourses } from "@/lib/server";
 import Course from "@/types/Course";
 import Link from "next/link";

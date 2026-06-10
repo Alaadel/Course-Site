@@ -1,3 +1,5 @@
+'use client';
+
 import { useContext } from "react";
 
 import CourseList from "@/components/CourseList";
@@ -5,7 +7,7 @@ import SearchProducts from "@/components/SearchProducts";
 import SearchProductsContext from "@/store/SearchProductsContext";
 import Course from "@/types/Course";
 
-export function Products() {
+export default function Products() {
     const context = useContext(SearchProductsContext);
 
     return (

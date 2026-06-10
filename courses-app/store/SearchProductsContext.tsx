@@ -1,3 +1,5 @@
+'use client';
+
 import Course from "@/types/Course";
 import { createContext, useState, ReactNode } from "react";
 
