@@ -1,5 +1,5 @@
 import CourseCard from "./CourseCard";
-import Course, { CourseCardInfo } from "@/types/Course";
+import { CourseCardInfo } from "@/types/Course";
 
 export default function CourseList({ courseCards }: { courseCards: CourseCardInfo[] }) {
     return (
@@ -8,9 +8,9 @@ export default function CourseList({ courseCards }: { courseCards: CourseCardInf
                 <h2>Course List</h2>
                 <button>View All</button>
                 <ul>
-                    {courseCards.map((course) => (
-                        <li key={course.id}>
-                            <CourseCard courseCard={course} />
+                    {courseCards?.map((courseCard) => (
+                        <li key={courseCard.id}>
+                            <CourseCard courseCard={courseCard} />
                         </li>
                     ))}
                 </ul>

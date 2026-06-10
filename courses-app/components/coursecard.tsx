@@ -1,3 +1,5 @@
+'use client';
+
 import { purchaseCourse } from "@/lib/account";
 import Course, { CourseCardInfo } from "@/types/Course";
 
