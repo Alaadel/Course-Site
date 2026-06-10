@@ -2,11 +2,11 @@ import { getNewestCourses } from "@/lib/courses";
 import CourseList from "./CourseList";
 
 export default function NewestSection() {
-    const courses = getNewestCourses();
+    const courseCards = getNewestCourses();
 
     return (
         <>
-            <CourseList courses={courses} />
+            <CourseList courseCards={courseCards} />
         </>
     )
 }

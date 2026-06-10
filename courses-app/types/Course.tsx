@@ -14,14 +14,14 @@ export default class Course {
       price: price,
       description: description,
       imageUrl: imageUrl,
-      tags: tags
     };
-
+    
     this.details = {
       instructorName: instructorName,
       level: level,
       lengthInHours: lengthInHours,
-      sections: []
+      sections: [],
+      tags: tags
     };
 
     this.createdAt = new Date();
@@ -42,7 +42,6 @@ export type CourseCardInfo = {
   price: number;
   description: string;
   imageUrl: string;
-  tags: string[];
 };
 
 export type CourseDetailInfo = {
@@ -50,6 +49,7 @@ export type CourseDetailInfo = {
   level: CourseLevel;
   lengthInHours: number;
   sections: CourseSection_[];
+  tags: string[];
 };
 
 export type CourseLevel = "Beginner" | "Intermediate" | "Advanced";

@@ -1,11 +1,11 @@
 'use client';
 
 import { getSearchCourses } from "@/lib/courses";
-import Course from "@/types/Course";
+import Course, { CourseCardInfo } from "@/types/Course";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function SearchProducts(setContextCourses: { setContextCourses: (courses: Course[]) => void }) {
+export default function SearchProducts(setContextCourses: { setContextCourses: (courseCards: CourseCardInfo[]) => void }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [tags, setTags] = useState<string[]>([]);
     const [priceFrom, setPriceFrom] = useState<number | undefined>(undefined);

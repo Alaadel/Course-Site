@@ -5,7 +5,7 @@ export default function Curriculum({ course }: { course: Course }) {
     return (
         <>
             <ul>
-                {course.sections.map((section, index) => (
+                {course.details.sections.map((section, index) => (
                     <li key={index}>
                         <CourseSection section={section} />
                     </li>
