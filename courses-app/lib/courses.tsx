@@ -4,10 +4,6 @@ import Course, { CourseCardInfo } from "@/types/Course";
 
 const pageSize = 6;
 
-export function getCourses(): Course[] {
-    return courses;
-}
-
 export function getMostPopularCourses(count: number = pageSize): CourseCardInfo[] {
     const end = Math.min(count, courses.length);
     return courses.sort((a, b) => b.purchaseCount - a.purchaseCount).slice(0, end).map(course => course.info);
@@ -27,4 +23,8 @@ export function getSearchCourses(searchTerm: string, tags: string[], priceFrom?:
         const matchesPrice = (priceFrom === undefined || course.info.price >= priceFrom) && (priceTo === undefined || course.info.price <= priceTo);
         return matchesSearchTerm && matchesTags && matchesPrice;
     }).slice(0, end).map(course => course.info);
+}
+
+export function getCourse(courseId: number): Course | undefined {
+    return courses.find(course => course.info.id === courseId);
 }
