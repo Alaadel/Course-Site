@@ -1,16 +1,30 @@
+'use client';
+
+import { AuthContext } from "@/store/AuthContext";
 import Link from "next/link";
+import { useContext } from "react";
 
 export default function NavHeader() {
+    const context = useContext(AuthContext);
+
     return (
         <>
-            <div>
-                <Link href="/authentication">Go to Authentication Page</Link>
-                <Link href="/courses">Go to Courses Page</Link>
-                <Link href="/products">Go to Products Page</Link>
-                <Link href="/orders">Go to Orders Page</Link>
-                <Link href="/account">Go to Account Page</Link>
-                <Link href="/admin">Go to Admin Page</Link>
-            </div>
+            <ul>
+                <li><Link href="/login">Login</Link></li>
+                <li><Link href="/products">Products</Link></li>
+
+                {context?.isSignedIn ? (
+                    <>
+                        <li><Link href="/courses">Courses</Link></li>
+                        <li><Link href="/orders">Orders</Link></li>
+                        <li><Link href="/account">Account</Link></li>
+                    </>
+                ) : (
+                    <></>
+                )}
+
+                {/* <Link href="/admin">Go to Admin Page</Link> */}
+            </ul>
         </>
     )
 }
