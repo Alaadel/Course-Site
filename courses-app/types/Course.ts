@@ -36,6 +36,7 @@ export default class Course {
   }
 }
 
+// used for overviews
 export type CourseCardInfo = {
   id: number;
   title: string;
@@ -44,6 +45,7 @@ export type CourseCardInfo = {
   imageUrl: string;
 };
 
+// used for detailed views and editing
 export type CourseDetailInfo = {
   instructorName: string;
   level: CourseLevel;
@@ -57,14 +59,20 @@ export type CourseLevel = "Beginner" | "Intermediate" | "Advanced";
 export class CourseSection_ {
   title: string;
   lessons: CourseLesson_[] = [];
+  totalLengthInMinutes: number = 0;
 
   constructor(title: string) {
     this.title = title;
   }
   addLesson(lesson: CourseLesson_) {
     this.lessons.push(lesson);
+    this.totalLengthInMinutes += lesson.lengthInMinutes;
   }
   removeLesson(lessonTitle: string) {
+    const lesson = this.lessons.find(lesson => lesson.title === lessonTitle);
+    if (lesson) {
+      this.totalLengthInMinutes -= lesson.lengthInMinutes;
+    }
     this.lessons = this.lessons.filter(lesson => lesson.title !== lessonTitle);
   }
 }

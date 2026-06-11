@@ -1,4 +1,5 @@
 import Course from "@/types/Course";
+import CourseIndex from "./viewer/index/CourseIndex";
 
 export default function CourseModal({ course }: { course: Course }) {
     const info = course.info;
@@ -22,8 +23,9 @@ export default function CourseModal({ course }: { course: Course }) {
                     <p className="py-4">Level: {details.level}</p>
                     <p className="py-4">Length: {details.lengthInHours} hours</p>
                     <p className="py-4">Tags: {details.tags.join(", ")}</p>
+                    <p className="py-4">Total Length: {details.sections.reduce((total, section) => total + section.totalLengthInMinutes, 0)} minutes</p>
 
-
+                    <CourseIndex course={course} progress={null} />
                 </form>
             </dialog>
         </>

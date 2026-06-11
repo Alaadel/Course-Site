@@ -1,13 +1,14 @@
 import Course from "@/types/Course";
 import CourseSection from "./CourseSection";
+import { CourseProgress_ } from "@/types/Account";
 
-export default function Curriculum({ course }: { course: Course }) {
+export default function CourseIndex({ course, progress }: { course: Course, progress: CourseProgress_ | null }) {
     return (
         <>
             <ul>
                 {course.details.sections.map((section, index) => (
                     <li key={index}>
-                        <CourseSection section={section} />
+                        <CourseSection section={section} progress={progress} />
                     </li>
                 ))}
             </ul>

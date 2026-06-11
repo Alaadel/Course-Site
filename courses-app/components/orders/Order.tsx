@@ -7,20 +7,20 @@ import Course from "@/types/Course";
 export default function Order({ order }: { order: Order_ }) {
     const [course, setCourse] = useState<Course | undefined>(undefined);
 
-    async function fetchCourse(courseId: number) {
-        const course = await getCourse(courseId);
+    async function fetchCourse(courseIds: number[]) {
+        const course = await getCourse(courseIds[0]);
 
         if (course) {
             setCourse(course);
             console.log("Course details:", course);
         } else {
-            console.log("Course not found for ID:", courseId);
+            console.log("Course not found for ID:", courseIds[0]);
         }
     }
 
     useEffect(() => {
-        fetchCourse(order.courseId);
-    }, [order.courseId]);
+        fetchCourse(order.courseIds);
+    }, [order.courseIds]);
 
     return (
         <>

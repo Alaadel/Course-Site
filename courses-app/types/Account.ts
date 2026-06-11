@@ -1,15 +1,20 @@
-export class Account {
-    email: string;
-    password: string;
+import { Order_ } from "./Order";
 
+export class Account {
+    authId: number;
     name: string;
 
-    purchasedCourseIds: number[];
+    progress: CourseProgress_[];
 
-    constructor(email: string, password: string, name: string) {
-        this.email = email;
-        this.password = password;
+    constructor(id: number, name: string) {
+        this.authId = id;
         this.name = name;
-        this.purchasedCourseIds = [];
+        this.progress = [];
     }
 }
+
+export type CourseProgress_ = {
+    courseId: number;
+    sectionsFinished: number;
+    lastAccessed: Date;
+};

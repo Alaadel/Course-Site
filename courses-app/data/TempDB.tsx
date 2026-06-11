@@ -1,5 +1,6 @@
 import { Account } from "@/types/Account";
 import Course from "@/types/Course";
+import { Order_ } from "@/types/Order";
 
 export const courses: Course[] = [
     new Course(1, "Learn Next.js", 49.99, "A comprehensive course on Next.js for beginners.", "/images/nextjs-course.jpg", ["nextjs", "react", "javascript"], "John Doe", "Beginner", 10),
@@ -12,6 +13,6 @@ export const courses: Course[] = [
     new Course(8, "Next.js Performance Optimization", 54.99, "A course on optimizing performance in Next.js applications.", "/images/performance-course.jpg", ["nextjs", "performance"], "Alice Johnson", "Advanced", 12),
 ];
 
-export var accounts : Account[] = [
+export var orders : Order_[] = [
 
 ];
