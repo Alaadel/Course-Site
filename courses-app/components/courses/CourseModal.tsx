@@ -25,7 +25,7 @@ export default function CourseModal({ course }: { course: Course }) {
                     <p className="py-4">Tags: {details.tags.join(", ")}</p>
                     <p className="py-4">Total Length: {details.sections.reduce((total, section) => total + section.totalLengthInMinutes, 0)} minutes</p>
 
-                    <CourseIndex course={course} progress={null} />
+                    <CourseIndex course={course} progress={undefined} />
                 </form>
             </dialog>
         </>

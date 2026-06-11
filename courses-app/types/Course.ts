@@ -82,6 +82,7 @@ export class CourseLesson_ {
   content: string;
   videoUrl?: string;
   lengthInMinutes: number;
+  isCompleted: boolean = false;
 
   constructor(title: string, content: string, lengthInMinutes: number, videoUrl?: string) {
     this.title = title;

@@ -1,7 +1,8 @@
 import CourseCard from "./CourseCard";
-import { CourseCardInfo } from "@/types/Course";
+import Course, { CourseCardInfo } from "@/types/Course";
 
-export default function CourseList({ courseCards }: { courseCards: CourseCardInfo[] }) {
+export default function CourseList({ courseCards, onSelectCourse }: { courseCards: CourseCardInfo[], onSelectCourse: (courseId: number) => void }) {
+    
     return (
         <>
             <div>
@@ -10,7 +11,7 @@ export default function CourseList({ courseCards }: { courseCards: CourseCardInf
                 <ul>
                     {courseCards?.map((courseCard) => (
                         <li key={courseCard.id}>
-                            <CourseCard courseCard={courseCard} />
+                            <CourseCard courseCard={courseCard} onClick={() => onSelectCourse(courseCard.id)} />
                         </li>
                     ))}
                 </ul>

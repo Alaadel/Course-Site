@@ -2,9 +2,9 @@
 
 import { CourseCardInfo } from "@/types/Course";
 
-export default function CourseCard({courseCard: courseCard}: {courseCard: CourseCardInfo}) {
+export default function CourseCard({courseCard: courseCard, onClick}: {courseCard: CourseCardInfo, onClick?: (courseId: number) => void}) {
     function handleDetailsClick() {
-        // show modal
+        onClick?.(courseCard.id);
     }
     function handlePurchaseClick() {
         // purchaseCourse(courseCard.id);

@@ -2,12 +2,12 @@ import { createContext, useContext, useState } from "react";
 import Course_ from "@/types/Course";
 
 interface CourseViewContextValue {
-    course: Course_;
+    course: Course_ | undefined;
     selectedSectionIndex: number | null;
     selectedLessonIndex: number | null;
 }
 
-export const CourseViewContext = createContext<CourseViewContextValue | null>(null);
+export const CourseViewContext = createContext<CourseViewContextValue | undefined>(undefined);
 
 export function useCourseViewContext() {
     const context = useContext(CourseViewContext);
@@ -18,7 +18,7 @@ export function useCourseViewContext() {
     return context;
 }
 
-export function CourseViewContextProvider({ course, children }: { course: Course_, children: React.ReactNode }) {
+export function CourseViewContextProvider({ course, children }: { course: Course_ | undefined, children: React.ReactNode }) {
     const [selectedSectionIndex, setSelectedSectionIndex] = useState<number | null>(null);
     const [selectedLessonIndex, setSelectedLessonIndex] = useState<number | null>(null);
 

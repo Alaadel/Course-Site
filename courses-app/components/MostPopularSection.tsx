@@ -16,10 +16,15 @@ export default function MostPopularSection() {
     useEffect(() => {
         fetchCourses();
     }, []);
+
+    function handleSelectCourse(courseId: number) {
+        // Implement course selection logic here, e.g., navigate to course details page
+        console.log("Selected course ID:", courseId);
+    }
     
     return (
         <>
-            <CourseList courseCards={courses} />
+            <CourseList courseCards={courses} onSelectCourse={handleSelectCourse} />
         </>
     )
 }

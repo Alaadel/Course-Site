@@ -1,5 +1,3 @@
-import { Order_ } from "./Order";
-
 export class Account {
     authId: number;
     name: string;
@@ -10,6 +8,10 @@ export class Account {
         this.authId = id;
         this.name = name;
         this.progress = [];
+    }
+
+    getCourseProgress(courseId: number): CourseProgress_ | undefined {
+        return this.progress.find(p => p.courseId === courseId);
     }
 }
 

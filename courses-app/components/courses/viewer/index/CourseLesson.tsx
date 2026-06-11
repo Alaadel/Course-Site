@@ -7,6 +7,10 @@ export default function CourseLesson({ lesson }: { lesson: CourseLesson_ }) {
             <p>{lesson.content}</p>
             {lesson.videoUrl && <video src={lesson.videoUrl} controls />}
             <p>Length: {lesson.lengthInMinutes} minutes</p>
+
+            {lesson.isCompleted ?? (
+                <span className="badge badge-success">Completed</span>
+            )}
         </>
     );
 }

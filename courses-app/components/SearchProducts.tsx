@@ -5,15 +5,15 @@ import Course, { CourseCardInfo } from "@/types/Course";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function SearchProducts(setContextCourses: { setContextCourses: (courseCards: CourseCardInfo[]) => void }) {
+export default function SearchProducts({ setContextCourses }: { setContextCourses: (courseCards: CourseCardInfo[]) => void }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [tags, setTags] = useState<string[]>([]);
     const [priceFrom, setPriceFrom] = useState<number | undefined>(undefined);
     const [priceTo, setPriceTo] = useState<number | undefined>(undefined);
 
-    function handleSearchClick() {
-        const courses = getSearchCourses(searchTerm, tags, priceFrom, priceTo);
-        setContextCourses.setContextCourses(courses);
+    async function handleSearchClick() {
+        const courses = await getSearchCourses(searchTerm, tags, priceFrom, priceTo);
+        setContextCourses(courses);
     }
     
     return (
