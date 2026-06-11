@@ -1,12 +1,17 @@
-export class Account {
+export class Account_ {
     authId: number;
-    name: string;
+    email: string;
+
+    firstName: string;
+    lastName?: string;
 
     progress: CourseProgress_[];
 
-    constructor(id: number, name: string) {
+    constructor(id: number, email: string, firstName: string, lastName?: string) {
         this.authId = id;
-        this.name = name;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.progress = [];
     }
 

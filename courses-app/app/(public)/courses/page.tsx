@@ -1,10 +1,10 @@
 import CourseList from "@/components/courses/CourseList";
 import CourseViewer from "@/components/courses/viewer/CourseViewer";
-import { Account } from "@/types/Account";
+import { Account_ } from "@/types/Account";
 import Course, { CourseCardInfo } from "@/types/Course";
 import { useEffect, useState } from "react";
 
-export default function Courses({ account }: { account: Account }) {
+export default function Courses({ account }: { account: Account_ }) {
     const [courseCards, setCourseCards] = useState<CourseCardInfo[]>([]);
     const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
 

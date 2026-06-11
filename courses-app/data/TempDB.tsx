@@ -1,4 +1,4 @@
-import { Account } from "@/types/Account";
+import { Account_ } from "@/types/Account";
 import Course from "@/types/Course";
 import { Order_ } from "@/types/Order";
 

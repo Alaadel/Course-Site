@@ -1,14 +1,14 @@
 import { orders } from "@/data/TempDB";
-import { Account } from "@/types/Account";
+import { Account_ } from "@/types/Account";
 import { Order_ } from "@/types/Order";
 
-export async function createAccount(authId: number, name: string): Promise<Account> {
-    const newAccount = new Account(authId, name);
-    console.log(`Account created for ${authId} with name ${name}.`);
+export async function createAccount(authId: number, email: string, firstName: string, lastName?: string): Promise<Account_> {
+    const newAccount = new Account_(authId, email, firstName, lastName);
+    console.log(`Account created for ${authId} with email ${email} and name ${firstName} ${lastName}.`);
     return newAccount;
 }
 
-export async function purchaseCourse(account: Account, courseId: number) {
+export async function purchaseCourse(account: Account_, courseId: number) {
     const alreadyPurchased = await hasPurchasedCourse(account, courseId);
     if (alreadyPurchased) {
         throw new Error("You have already purchased this course.");
@@ -21,20 +21,20 @@ export async function purchaseCourse(account: Account, courseId: number) {
     console.log(`Course with ID ${courseId} has been purchased by ${account.authId}.`);
 }
 
-async function hasPurchasedCourse(account: Account, courseId: number): Promise<boolean> {
+async function hasPurchasedCourse(account: Account_, courseId: number): Promise<boolean> {
     const orders = await getOrders(account);
     return orders.some(order => order.courseIds.includes(courseId));
 }
 
 
-export async function getOrderIds(account: Account): Promise<number[]> {
+export async function getOrderIds(account: Account_): Promise<number[]> {
     return [];
 }
-export async function getOrders(account: Account): Promise<Order_[]> {
+export async function getOrders(account: Account_): Promise<Order_[]> {
     const orderIds = await getOrderIds(account);
     return orders.filter(order => orderIds.includes(order.id));
 }
-export async function getPurchasedCoursesIds(account: Account): Promise<number[]> {
+export async function getPurchasedCoursesIds(account: Account_): Promise<number[]> {
     const orders = await getOrders(account);
     return orders.flatMap(order => order.courseIds);
 }

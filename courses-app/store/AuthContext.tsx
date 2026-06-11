@@ -31,7 +31,7 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
-
+    
     // async function to handle data
     async function fetchSession() {
         const sessionData = await supabase.auth.getSession();
