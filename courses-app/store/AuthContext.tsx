@@ -8,8 +8,10 @@ interface AuthContextType {
     user: any;
     session: any;
     isSignedIn: boolean;
+    error: string | null;
 
     signIn: (email: string, password: string) => Promise<void>;
+    register: (email: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
 }
 
@@ -22,6 +24,7 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
     const [user, setUser] = useState<any>(null);
     const [session, setSession] = useState<any>(null);
     const [isSignedIn, setIsSignedIn] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     // async function to handle data
     async function fetchSession() {
@@ -29,13 +32,15 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
         const session = sessionData.data.session;
 
         if (session) {
+            setIsSignedIn(true);
+
             setSession(session);
             setUser(session.user);
-            setIsSignedIn(true);
         } else {
+            setIsSignedIn(false);
+
             setSession(null);
             setUser(null);
-            setIsSignedIn(false);
         }
     }
 
@@ -59,22 +64,46 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
 
     // sign-in/out callbacks to be provided to consumers so they can use them
     const signIn = async (email: string, password: string) => {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-            console.log("Error signing in:", error.message);
-            // throw error;
+        try {
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                setError(error.message);
+                console.log("Error signing in:", error.message);
+            }
+        } catch (error) {
+            setError(error instanceof Error ? error.message : String(error));
+            console.log("Unexpected error during sign-in:", error);
         }
     };
     const signOut = async () => {
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-            console.log("Error signing out:", error.message);
-            // throw error;
+        try {
+            const { error } = await supabase.auth.signOut();
+
+            if (error) {
+                setError(error.message);
+                console.log("Error signing out:", error.message);
+            }
+        } catch (error) {
+            setError(error instanceof Error ? error.message : String(error));
+            console.log("Unexpected error during sign-out:", error);
+        }
+    };
+    const register = async (email: string, password: string) => {
+        try {
+            const { error } = await supabase.auth.signUp({ email, password });
+            if (error) {
+                setError(error.message);
+                console.log("Error registering:", error.message);
+            }
+        } catch (error) {
+            setError(error instanceof Error ? error.message : String(error));
+            console.log("Unexpected error during registration:", error);
         }
     };
 
     return (
-        <AuthContext.Provider value={{ user, session, isSignedIn, signIn, signOut }}>
+        <AuthContext.Provider value={{ user, session, isSignedIn, error, signIn, register, signOut }}>
             {children}
         </AuthContext.Provider>
     );
