@@ -26,10 +26,17 @@ export default function Login() {
         context.register(emailRef.current.value, passwordRef.current.value);
     }
     function handleForgotPassword() {
+        console.log("clicked forgot password");
+        if (!context) return;
+        if (!emailRef.current) return;
 
+        context.recoverPassword(emailRef.current.value);
     }
     function handleGoogleLogin() {
-
+        console.log("clicked google login");
+        if (!context) return;
+        
+        context.loginWithGoogle();
     }
 
     return (
@@ -47,6 +54,7 @@ export default function Login() {
             <button onClick={handleRegister}>Register</button>
 
             {context?.error && <p style={{ color: "red" }}>{context.error}</p>}
+            {context?.success && <p style={{ color: "green" }}>{context.success}</p>}
         </>
     );
 }
