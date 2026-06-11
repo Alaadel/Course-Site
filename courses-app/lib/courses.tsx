@@ -4,17 +4,17 @@ import Course, { CourseCardInfo } from "@/types/Course";
 
 const pageSize = 6;
 
-export function getMostPopularCourses(count: number = pageSize): CourseCardInfo[] {
+export async function getMostPopularCourses(count: number = pageSize): Promise<CourseCardInfo[]> {
     const end = Math.min(count, courses.length);
     return courses.sort((a, b) => b.purchaseCount - a.purchaseCount).slice(0, end).map(course => course.info);
 }
 
-export function getNewestCourses(count: number = pageSize): CourseCardInfo[] {
+export async function getNewestCourses(count: number = pageSize): Promise<CourseCardInfo[]> {
     const end = Math.min(count, courses.length);
     return courses.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, end).map(course => course.info);
 }
 
-export function getSearchCourses(searchTerm: string, tags: string[], priceFrom?: number, priceTo?: number, count: number = pageSize): CourseCardInfo[] {
+export async function getSearchCourses(searchTerm: string, tags: string[], priceFrom?: number, priceTo?: number, count: number = pageSize): Promise<CourseCardInfo[]> {
     const end = Math.min(count, courses.length);
 
     return courses.filter(course => {
@@ -25,6 +25,6 @@ export function getSearchCourses(searchTerm: string, tags: string[], priceFrom?:
     }).slice(0, end).map(course => course.info);
 }
 
-export function getCourse(courseId: number): Course | undefined {
+export async function getCourse(courseId: number): Promise<Course | undefined> {
     return courses.find(course => course.info.id === courseId);
 }

@@ -2,7 +2,7 @@
 
 import { useContext } from "react";
 
-import CourseList from "@/components/CourseList";
+import CourseList from "@/components/courses/CourseList";
 import SearchProducts from "@/components/SearchProducts";
 import SearchProductsContext from "@/store/SearchProductsContext";
 import { CourseCardInfo } from "@/types/Course";

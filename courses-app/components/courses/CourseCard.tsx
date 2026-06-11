@@ -1,7 +1,6 @@
 'use client';
 
-import { purchaseCourse } from "@/lib/account";
-import Course, { CourseCardInfo } from "@/types/Course";
+import { CourseCardInfo } from "@/types/Course";
 
 export default function CourseCard({courseCard: courseCard}: {courseCard: CourseCardInfo}) {
     function handleDetailsClick() {
