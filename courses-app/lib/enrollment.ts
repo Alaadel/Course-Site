@@ -1,6 +1,12 @@
 import { supabase } from "@/lib/supabase-client";
 
-// enrollment table connects account and course, with a progress column to store progress as json
+
+export type EnrollmentSchema = {
+    account_id: number
+    course_id: number
+    created_at: string
+}
+
 
 export async function purchaseCourse(accountId: number, courseId: number): Promise<void> {
     const { data, error } = await supabase

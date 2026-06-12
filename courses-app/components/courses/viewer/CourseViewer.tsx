@@ -2,7 +2,7 @@
 
 import Course from "@/types/Course";
 import CourseIndex from "./index/CourseIndex";
-import { CourseProgress_ } from "@/types/Account";
+import { CourseProgress_ } from "@/types/account";
 import CourseVideo from "./CourseVideo";
 import { CourseViewContext, CourseViewContextProvider } from "@/store/CourseViewContext";
 import { useContext, useEffect, useState } from "react";

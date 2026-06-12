@@ -1,10 +1,11 @@
 export default class Course {
+  // separating info from details to improve queries
   info: CourseCardInfo;
   details: CourseDetailInfo;
 
   // Internal info
   createdAt: Date;
-  purchaseCount: number;
+  // purchaseCount: number;
 
   constructor(id: number, title: string, price: number, description: string, imageUrl: string, tags: string[], instructorName: string, level: CourseLevel, lengthInHours: number) {
     
@@ -25,15 +26,15 @@ export default class Course {
     };
 
     this.createdAt = new Date();
-    this.purchaseCount = 0;
+    // this.purchaseCount = 0;
   }
 
-  addSection(section: CourseSection_) {
-    this.details.sections.push(section);
-  }
-  removeSection(sectionTitle: string) {
-    this.details.sections = this.details.sections.filter(section => section.title !== sectionTitle);
-  }
+  // addSection(section: CourseSection_) {
+  //   this.details.sections.push(section);
+  // }
+  // removeSection(sectionTitle: string) {
+  //   this.details.sections = this.details.sections.filter(section => section.title !== sectionTitle);
+  // }
 }
 
 // used for overviews

@@ -1,6 +1,6 @@
 import { CourseSection_ } from "@/types/Course";
 import CourseLesson from "./CourseLesson";
-import { CourseProgress_ } from "@/types/Account";
+import { CourseProgress_ } from "@/types/account";
 
 export default function CourseSection({ section, progress }: { section: CourseSection_, progress: CourseProgress_ | undefined }) {
     const isCompleted = progress ? progress.sectionsFinished > 0 : false;

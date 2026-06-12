@@ -1,9 +1,9 @@
-import { Account_ } from "@/types/Account";
+import { AccountSchema } from "@/types/account";
 import Course from "@/types/Course";
 import { useEffect, useState } from "react";
 import CourseProgress from "./CourseProgress";
 
-export default function CourseProgressList({ account }: { account: Account_ }) {
+export default function CourseProgressList({ account }: { account: AccountSchema }) {
     const [courses, setCourses] = useState<Course[]>([]);
 
     async function fetchCourses() {

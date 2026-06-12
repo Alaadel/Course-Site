@@ -1,8 +1,14 @@
 import { supabase } from "@/lib/supabase-client";
 
-import { Account_ } from "@/types/Account";
+export type AccountSchema = {
+    id: number;
+    first_name: string;
+    last_name: string;
+    active: boolean;
+    created_at: string;
+}
 
-export async function createAccount(authId: number, email: string, firstName: string, lastName?: string): Promise<void> {
+export async function createAccount(authId: number, firstName: string, lastName?: string): Promise<void> {
     const { data, error } = await supabase
         .from('accounts')
         .insert({ id: authId, first_name: firstName, last_name: lastName })
@@ -16,7 +22,7 @@ export async function createAccount(authId: number, email: string, firstName: st
     // return data as Account_;
 }
 
-export async function getAccountByAuthId(authId: number): Promise<Account_ | null> {
+export async function getAccountByAuthId(authId: number): Promise<AccountSchema | null> {
     const { data, error } = await supabase
         .from('accounts')
         .select('*')
@@ -30,14 +36,14 @@ export async function getAccountByAuthId(authId: number): Promise<Account_ | nul
         throw new Error(`Error fetching account: ${error.message}`);
     }
 
-    return data as Account_;
+    return data as AccountSchema;
 }
 
-export async function updateAccount(account: Account_): Promise<void> {
+export async function updateAccount(account: AccountSchema): Promise<void> {
     const { data, error } = await supabase
         .from('accounts')
-        .update({ first_name: account.firstName, last_name: account.lastName })
-        .eq('id', account.authId);
+        .update({ first_name: account.first_name, last_name: account.last_name })
+        .eq('id', account.id);
 
     if (error) {
         throw new Error(`Error updating account: ${error.message}`);

@@ -1,4 +1,4 @@
-import { CourseProgress_ } from "@/types/Account";
+import { CourseProgress_ } from "@/types/account";
 import Course, { CourseCardInfo } from "@/types/Course";
 
 export default function CourseProgress({ progress, course }: { progress: CourseProgress_[]; course: Course }) {

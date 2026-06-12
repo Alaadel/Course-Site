@@ -1,6 +1,6 @@
 import Course from "@/types/Course";
 import CourseSection from "./CourseSection";
-import { CourseProgress_ } from "@/types/Account";
+import { CourseProgress_ } from "@/types/account";
 
 export default function CourseIndex({ course, progress }: { course: Course | undefined, progress: CourseProgress_ | undefined }) {
     return (
