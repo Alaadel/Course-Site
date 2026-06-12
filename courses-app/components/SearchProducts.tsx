@@ -1,6 +1,6 @@
 'use client';
 
-import { getSearchCourses } from "@/lib/courses";
+import { getSearchCourses } from "@/lib/tables/courses";
 import Course, { CourseCardInfo } from "@/types/Course";
 import Link from "next/link";
 import { useState } from "react";

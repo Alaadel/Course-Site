@@ -1,13 +1,10 @@
 import { supabase } from "@/lib/supabase-client";
 
-export type InstructorSchema = {
-    id: number;
-    name: string;
-}
+import type { InstructorRow } from "@/lib/dbTypes";
 
 export async function createInstructor(name: string): Promise<void> {
     const { data, error } = await supabase
-        .from('instructors')
+        .from('instructor')
         .insert({ name });
         
     if (error) {
@@ -17,14 +14,14 @@ export async function createInstructor(name: string): Promise<void> {
     console.log(`Instructor created: ${name}`);
 }
 
-export async function getAvailableInstructors(): Promise<InstructorSchema[]> {
+export async function getAvailableInstructors(): Promise<InstructorRow[]> {
     const { data, error } = await supabase
-        .from('instructors')
+        .from('instructor')
         .select('*');
     
         if (error) {
         throw new Error(`Error fetching instructors: ${error.message}`);
     }
 
-    return data as InstructorSchema[];
+    return data as InstructorRow[];
 }

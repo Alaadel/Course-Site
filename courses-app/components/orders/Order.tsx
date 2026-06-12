@@ -1,5 +1,5 @@
 import { Order_ } from "@/types/Order";
-import { getCourse } from "@/lib/courses";
+import { getCourse } from "@/lib/tables/courses";
 import { useEffect, useState } from "react";
 import CourseCard from "../courses/CourseCard";
 import Course from "@/types/Course";

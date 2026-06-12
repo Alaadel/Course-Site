@@ -1,20 +1,14 @@
 import { supabase } from "@/lib/supabase-client";
 
-export type AccountSchema = {
-    id: number;
-    first_name: string;
-    last_name: string;
-    active: boolean;
-    created_at: string;
-}
+import { AccountRow } from "@/lib/dbTypes";
 
-export async function createAccount(authId: number, firstName: string, lastName?: string): Promise<void> {
+export async function createAccount(authId: string, firstName: string, lastName?: string): Promise<void> {
     const { data, error } = await supabase
-        .from('accounts')
+        .from('account')
         .insert({ id: authId, first_name: firstName, last_name: lastName })
     // .select()   // return the inserted row
     // .single();  // we expect only one row to be inserted, so do not return an array
-
+    
     if (error) {
         throw new Error(`Error creating account: ${error.message}`);
     }
@@ -22,9 +16,9 @@ export async function createAccount(authId: number, firstName: string, lastName?
     // return data as Account_;
 }
 
-export async function getAccountByAuthId(authId: number): Promise<AccountSchema | null> {
+export async function getAccountByAuthId(authId: string): Promise<AccountRow | null> {
     const { data, error } = await supabase
-        .from('accounts')
+        .from('account')
         .select('*')
         .eq('id', authId)
         .single();
@@ -36,12 +30,12 @@ export async function getAccountByAuthId(authId: number): Promise<AccountSchema 
         throw new Error(`Error fetching account: ${error.message}`);
     }
 
-    return data as AccountSchema;
+    return data as AccountRow;
 }
 
-export async function updateAccount(account: AccountSchema): Promise<void> {
+export async function updateAccount(account: AccountRow): Promise<void> {
     const { data, error } = await supabase
-        .from('accounts')
+        .from('account')
         .update({ first_name: account.first_name, last_name: account.last_name })
         .eq('id', account.id);
 

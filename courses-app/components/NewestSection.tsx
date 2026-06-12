@@ -1,6 +1,6 @@
 'use client';
 
-import { getNewestCourses } from "@/lib/courses";
+import { getNewestCourses } from "@/lib/tables/courses";
 import CourseList from "./courses/CourseList";
 import { useEffect, useState } from "react";
 import { CourseCardInfo } from "@/types/Course";

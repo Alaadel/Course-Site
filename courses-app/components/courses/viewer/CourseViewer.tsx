@@ -7,7 +7,7 @@ import CourseVideo from "./CourseVideo";
 import { CourseViewContext, CourseViewContextProvider } from "@/store/CourseViewContext";
 import { useContext, useEffect, useState } from "react";
 import CourseContent from "./index/CourseContent";
-import { getCourse } from "@/lib/courses";
+import { getCourse } from "@/lib/tables/courses";
 
 export default function CourseViewer({ courseId, progress }: { courseId: number, progress: CourseProgress_ | undefined }) {
     const context = useContext(CourseViewContext);

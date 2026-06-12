@@ -1,15 +1,9 @@
 import { supabase } from "@/lib/supabase-client";
 
-export type ActivitySchema = {
-    id: number;
-    created_at: string;
-    account_id: number;
-    type: string;
-    data: string;
-}
+import { ActivityRow } from "@/lib/dbTypes";
 
+// helpers to handle time
 const default_window = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
-
 const clampWindow = (from: string, to: string): [string, string] => {
     if (!from) {
         from = new Date(Date.now() - default_window).toISOString();
@@ -21,9 +15,9 @@ const clampWindow = (from: string, to: string): [string, string] => {
     return [from, to];
 }
 
-export async function logActivity(accountId: number, type: string, data: string): Promise<void> {
+export async function logActivity(accountId: string, type: string, data: string): Promise<void> {
     const { data: activityData, error } = await supabase
-        .from('activities')
+        .from('activity')
         .insert({ account_id: accountId, type, data });
         
     if (error) {
@@ -35,11 +29,11 @@ export async function logActivity(accountId: number, type: string, data: string)
 
 // All functions should use time windows to limit the amount of data fetched
 
-export async function getActivityByTime(accountId: number, from: string, to: string): Promise<ActivitySchema[]> {
+export async function getActivityByTime(accountId: string, from: string, to: string): Promise<ActivityRow[]> {
     [from, to] = clampWindow(from, to);
 
     const { data, error } = await supabase
-        .from('activities')
+        .from('activity')
         .select('*')
         .eq('account_id', accountId)
         .gte('created_at', from)
@@ -50,13 +44,13 @@ export async function getActivityByTime(accountId: number, from: string, to: str
         throw new Error(`Error fetching activities: ${error.message}`);
     }
 
-    return data;
+    return data as ActivityRow[];
 }
-export async function getActivitiesByAccountId(accountId: number, from: string, to: string): Promise<ActivitySchema[]> {
+export async function getActivitiesByAccountId(accountId: string, from: string, to: string): Promise<ActivityRow[]> {
     [from, to] = clampWindow(from, to);
 
     const { data, error } = await supabase
-        .from('activities')
+        .from('activity')
         .select('*')
         .eq('account_id', accountId)
         .gte('created_at', from)
@@ -67,5 +61,5 @@ export async function getActivitiesByAccountId(accountId: number, from: string, 
         throw new Error(`Error fetching activities: ${error.message}`);
     }
 
-    return data;
+    return data as ActivityRow[];
 }

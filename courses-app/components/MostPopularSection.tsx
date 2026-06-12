@@ -1,6 +1,6 @@
 'use client';
 
-import { getMostPopularCourses } from "@/lib/courses";
+import { getMostPopularCourses } from "@/lib/tables/courses";
 import CourseList from "./courses/CourseList";
 import { CourseCardInfo } from "@/types/Course";
 import { useEffect, useState } from "react";
