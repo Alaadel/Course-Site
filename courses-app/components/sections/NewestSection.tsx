@@ -1,7 +1,7 @@
 'use client';
 
 import { getNewestCourses } from "@/lib/tables/courses";
-import CourseList from "./courses/CourseList";
+import CourseList from "../courses/CourseList";
 import { useEffect, useState } from "react";
 import { CourseRow } from "@/lib/dbTypes";
 
@@ -24,7 +24,7 @@ export default function NewestSection() {
     
     return (
         <>
-            <CourseList courseCards={courseCards} onSelectCourse={handleSelectCourse} />
+            <CourseList title="Newest Courses" courseCards={courseCards} onSelectCourse={handleSelectCourse} />
         </>
     )
 }

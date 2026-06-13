@@ -1,13 +1,15 @@
 import { CourseRow } from "@/lib/dbTypes";
 import CourseCard from "./CourseCard";
+import styles from "./CourseList.module.css";
 
-export default function CourseList({ courseCards: courseRows, onSelectCourse }: { courseCards: CourseRow[], onSelectCourse: (courseId: number) => void }) {
+export default function CourseList({ title, courseCards: courseRows, onSelectCourse }: { title: string, courseCards: CourseRow[], onSelectCourse: (courseId: number) => void }) {
     
     return (
         <>
-            <div>
-                <h2>Course List</h2>
+            <div className={styles.CourseList}>
+                <h2>{title}</h2>
                 <button>View All</button>
+                
                 <ul>
                     {courseRows?.map((courseCard) => (
                         <li key={courseCard.id}>

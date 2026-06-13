@@ -1,0 +1,9 @@
+@reference "tailwindcss";
+
+.NavHeader {
+    @apply 
+    flex p-4
+    justify-center 
+    gap-x-8 
+    bg-black shadow-lg shadow-gray-300;
+}

@@ -1,7 +1,7 @@
 'use client';
 
 import { getPopularCourses } from "@/lib/tables/courses";
-import CourseList from "./courses/CourseList";
+import CourseList from "../courses/CourseList";
 import { useEffect, useState } from "react";
 import { CourseRow } from "@/lib/dbTypes";
 
@@ -24,7 +24,7 @@ export default function MostPopularSection() {
     
     return (
         <>
-            <CourseList courseCards={courses} onSelectCourse={handleSelectCourse} />
+            <CourseList title="Most Popular Courses" courseCards={courses} onSelectCourse={handleSelectCourse} />
         </>
     )
 }

@@ -1,0 +1,13 @@
+@reference "tailwindcss";
+
+.NavHeaderButton {
+    @apply
+    h-max p-4 
+    text-white
+    transition duration-800 ease-in-out;
+
+    &:hover {
+        @apply
+        bg-white text-black;
+    }
+}
