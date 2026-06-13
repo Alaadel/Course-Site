@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+@theme {
+  --color-border-color: #dddddd;
+
+  --color-test1: red;
+  --color-test2: blue;
+  --color-test3: green;
+  --color-test4: yellow;
+
+  --radius-main-radius: xl;
+}
+
+@layer components {
+  .main-button {
+    @apply flex w-full 
+    justify-center bg-black
+    text-white;
+  }
+  .secondary-button {
+    @apply justify-center border-2
+     border-gray-400 bg-white
+     text-black;
+  }
+
+  .nav-bar {
+    @apply /* 
+    */ flex 
+    justify-center
+    gap-8 bg-black shadow-lg shadow-gray-300;
+  }
+  .nav-btn {
+    @apply h-max p-4 text-white
+     transition duration-800
+     ease-in-out hover:bg-white hover:text-black;
+  }
+
+  .course-section {
+    @apply m-8;
+  }
+  .course-section-header {
+    @apply m-4 flex gap-8;
+  }
+  .course-grid {
+    @apply grid grid-cols-3 gap-2;
+  }
+  .course-card {
+    @apply @container m-2 rounded-xl
+    border-2
+    border-border-color;
+  }
+
+  .course-card-img {
+    @apply rounded-t-xl;
+  }
+  .course-card-details {
+    @apply m-2;
+  }
+
+  .purchase-button {
+    @apply transition duration-400
+     ease-in-out hover:bg-yellow-500 hover:text-black;
+  }
+
+  .search-section {
+    @apply m-4 rounded-sm
+    border-2
+    border-border-color p-4
+    grid grid-rows-3 gap-2;
+  }
+
+  .search-price-section {
+    @apply grid grid-cols-2 gap-2 p-1;
+  }
+  .search-input {
+    @apply w-full rounded-sm border-1 
+    border-border-color
+    p-2;
+  }
+
+  .tag-list {
+    @apply flex gap-2;
+  }
+  .tag-item {
+    @apply border-1 border-gray-400 rounded-xl 
+    p-1
+    text-gray-800
+    transition duration-400;
+
+    &.active {
+      @apply bg-blue-600 text-white
+    }
+    &.active:hover {
+      @apply bg-white text-black;
+    }
+    &.normal {
+      @apply bg-white
+    }
+    &.normal:hover {
+      @apply bg-blue-200;
+    }
+  }
+}
+
+@layer utilities {
+  .main-title {
+    @apply font-bold text-black;
+  }
+  .secondary-title {
+    @apply text-gray-500;
+  }
+  .main-text {
+    @apply text-black;
+  }
+  .description-text {
+    @apply m-2 line-clamp-3;
+  }
+
+  .responsive-header {
+    @apply text-[clamp(1rem,5rem,2rem)];
+  }
+
+  .button {
+    @apply rounded-sm px-4 py-2;
+  }
+}
+
+<div>
+  <nav class="nav-bar">
+    <a class="nav-btn" href="#">Home</a>
+    <a class="nav-btn" href="#">Products</a>
+    <a class="nav-btn" href="#">My Orders</a>
+  </nav>
+
+  <div class="search-section">
+    <div>
+    <label>Search</label><br/>
+    <input class="search-input" placeholder="Enter keywords"/>
+    </div>
+
+    <div class="">
+      <label>Tags</label><br/>
+      <ul class="tag-list">
+        <li class="tag-item normal">Operating System</li>
+        <li class="tag-item active">Front-end</li>
+      </ul>
+    </div>
+
+    <div class="search-price-section">
+      <div class="">
+        <label>Min Price</label></br>
+        <input class="search-input" type="number"/>
+      </div>
+      <div class="">
+        <label>Max Price</label></br>
+        <input class="search-input" type="number"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="course-section">
+    <div class="course-section-header">
+      <h1 class="main-title responsive-header">Most Popular</h1>
+      <button class="button secondary-button">View All</button>
+    </div>
+
+    <div class="course-grid">
+      <div class="course-card">
+        <img class="course-card-img" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flaravelnews.s3.amazonaws.com%2Fimages%2Ftailwindcss.png&f=1&nofb=1&ipt=3b3f0946a54526da702023d5ce118dbcfc02e9ebe21fe8f737ebe5ff3403c2f4"></img>
+        
+        <div class="course-card-details">
+          <h2 class="main-title">Course Title</h2>
+          <h3 class="secondary-title">$12.5</h3>
+          
+          <p class ="main-text description-text">Description text goes here. This course is about introduction to web dev, including tailwindcss.</p>
+          <button class="button main-button purchase-button">Purchase</button>
+        </div>
+
+      </div>
+
+      <div class="course-card">
+        <img class="course-card-img" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flaravelnews.s3.amazonaws.com%2Fimages%2Ftailwindcss.png&f=1&nofb=1&ipt=3b3f0946a54526da702023d5ce118dbcfc02e9ebe21fe8f737ebe5ff3403c2f4"></img>
+        
+        <div class="course-card-details">
+        <h2 class="main-title">Course Title</h2>
+        <h3 class="secondary-title">$12.5</h3>
+        
+        <p class ="main-text description-text">Description text goes here. This course is about introduction to web dev, including tailwindcss.</p>
+        <button class="button main-button purchase-button">Purchase</button>
+        </div>
+
+      </div>
+
+      <div class="course-card">
+        <img class="course-card-img" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flaravelnews.s3.amazonaws.com%2Fimages%2Ftailwindcss.png&f=1&nofb=1&ipt=3b3f0946a54526da702023d5ce118dbcfc02e9ebe21fe8f737ebe5ff3403c2f4"></img>
+        
+        <div class="course-card-details">
+        <h2 class="main-title">Course Title</h2>
+        <h3 class="secondary-title">$12.5</h3>
+        
+        <p class ="main-text description-text">Description text goes here. This course is about introduction to web dev, including tailwindcss.</p>
+        <button class="button main-button purchase-button">Purchase</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
