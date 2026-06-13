@@ -3,13 +3,13 @@
 import { getNewestCourses } from "@/lib/tables/courses";
 import CourseList from "./courses/CourseList";
 import { useEffect, useState } from "react";
-import { CourseCardInfo } from "@/types/Course";
+import { CourseRow } from "@/lib/dbTypes";
 
 export default function NewestSection() {
-    const [courseCards, setCourseCards] = useState<CourseCardInfo[]>([]);
+    const [courseCards, setCourseCards] = useState<CourseRow[]>([]);
 
     async function fetchCourses() {
-        const newestCourses = await getNewestCourses();
+        const newestCourses = await getNewestCourses(6);
         setCourseCards(newestCourses);
     }
 

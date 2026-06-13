@@ -82,13 +82,58 @@ export async function getCourseIndexAndProgress(accountId: string, courseId: num
                 const progress = lesson.progress.find((p) => p.account_id === accountId);
                 sectionProgress.lesson_progress.set(lesson.id, { complete: progress ? progress.complete : false });
             });
+            sectionProgress.calculateProgress();
             courseProgress.section_progress.set(section.id, sectionProgress);
         });
+        courseProgress.calculateProgress();
     });
 
     return courseProgress;
 }
 
+export type AccountCourseProgress = {
+    courseId: number;
+    progress: CourseProgress_;
+}
+
+export async function getAccountCourseProgress(accountId: string): Promise<AccountCourseProgress[]> {
+    const { data, error } = await supabase
+        .from('course')
+        .select(`
+        id,
+        section (
+            id,
+            lesson (
+                id,
+                progress!inner(account_id, complete)
+            )
+        )
+    `);
+
+    if (error) {
+        console.error("Error fetching course progress:", error);
+        throw new Error("Failed to fetch course progress");
+    }
+
+    const progressList: AccountCourseProgress[] = [];
+
+    data.forEach((course) => {
+        const courseProgress = new CourseProgress_(course.id);
+        course.section.forEach((section) => {
+            const sectionProgress = new SectionProgress_();
+            section.lesson.forEach((lesson) => {
+                const progress = lesson.progress.find((p) => p.account_id === accountId);
+                sectionProgress.lesson_progress.set(lesson.id, { complete: progress ? progress.complete : false });
+            });
+            sectionProgress.calculateProgress();
+            courseProgress.section_progress.set(section.id, sectionProgress);
+        });
+        courseProgress.calculateProgress();
+        progressList.push({ courseId: course.id, progress: courseProgress });
+    });
+
+    return progressList;
+}
 
 // markLessonAsStarted: creates a new entry in the progress table for the account and lesson, with complete set to false
 export async function markLessonAsStarted(accountId: string, lessonId: number): Promise<void> {

@@ -1,23 +1,23 @@
 'use client';
 
-import { CourseCardInfo } from "@/types/Course";
+import { CourseRow } from "@/lib/dbTypes";
 
-export default function CourseCard({courseCard: courseCard, onClick}: {courseCard: CourseCardInfo, onClick?: (courseId: number) => void}) {
+export default function CourseCard({courseRow, onClick}: {courseRow: CourseRow, onClick?: (courseId: number) => void}) {
     function handleDetailsClick() {
-        onClick?.(courseCard.id);
+        onClick?.(courseRow.id);
     }
     function handlePurchaseClick() {
-        // purchaseCourse(courseCard.id);
+        // purchaseCourse(courseRow.id);
     }
 
     return (
         <>
-            <h2>{courseCard.title}</h2>
-            <h3>${courseCard.price}</h3>
-            <p>{courseCard.description}</p>
+            <h2>{courseRow.title}</h2>
+            <h3>${courseRow.price}</h3>
+            <p>{courseRow.description}</p>
 
             <button onClick={handleDetailsClick}>View Details</button>
-            <button>Purchase</button>
+            <button onClick={handlePurchaseClick}>Purchase</button>
         </>
     );
 }

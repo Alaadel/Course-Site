@@ -2,6 +2,21 @@ import { supabase } from "../supabase-client";
 
 import type { CourseRow } from "../dbTypes";
 
+export async function getCourseById(courseId: number): Promise<CourseRow> {
+    const { data, error } = await supabase
+        .from('course')
+        .select('*')
+        .eq('id', courseId)
+        .single();
+
+    if (error) {
+        console.error("Error fetching course:", error);
+        throw new Error("Failed to fetch course");
+    }
+
+    return data as CourseRow;
+}
+
 export async function getAllCourses(): Promise<CourseRow[]> {
     const { data, error } = await supabase
         .from('course')
@@ -12,7 +27,7 @@ export async function getAllCourses(): Promise<CourseRow[]> {
         throw new Error("Failed to fetch courses");
     }
 
-    return data;
+    return data as CourseRow[];
 }
 
 export async function getNewestCourses(limit: number): Promise<CourseRow[]> {
@@ -45,6 +60,35 @@ export async function getPopularCourses(limit: number): Promise<CourseRow[]> {
     return data as CourseRow[];
 }
 
+export async function getSearchCourses(searchTerm: string, tags: string[], priceFrom?: number, priceTo?: number): Promise<CourseRow[]> {
+    let query = supabase
+        .from('course')
+        .select('*')
+        .ilike('title', `%${searchTerm}%`);
+
+    if (tags.length > 0) {
+        query = query.overlaps('tags', tags);
+    }
+
+    if (priceFrom !== undefined) {
+        query = query.gte('price', priceFrom);
+    }
+
+    if (priceTo !== undefined) {
+        query = query.lte('price', priceTo);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+        console.error("Error searching courses:", error);
+        throw new Error("Failed to search courses");
+    }
+
+    return data as CourseRow[];
+}
+
+
 export async function getLessonContent(lessonId: number): Promise<string> {
     const { data, error } = await supabase
         .from('lesson')
@@ -57,5 +101,5 @@ export async function getLessonContent(lessonId: number): Promise<string> {
         throw new Error("Failed to fetch lesson content");
     }
 
-    return data.content;
+    return data.content as string;
 }

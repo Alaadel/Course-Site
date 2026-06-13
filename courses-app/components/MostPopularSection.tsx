@@ -1,15 +1,15 @@
 'use client';
 
-import { getMostPopularCourses } from "@/lib/tables/courses";
+import { getPopularCourses } from "@/lib/tables/courses";
 import CourseList from "./courses/CourseList";
-import { CourseCardInfo } from "@/types/Course";
 import { useEffect, useState } from "react";
+import { CourseRow } from "@/lib/dbTypes";
 
 export default function MostPopularSection() {
-    const [courses, setCourses] = useState<CourseCardInfo[]>([]);
+    const [courses, setCourses] = useState<CourseRow[]>([]);
 
     async function fetchCourses() {
-        const popularCourses = await getMostPopularCourses();
+        const popularCourses = await getPopularCourses(6);
         setCourses(popularCourses);
     }
 

@@ -3,21 +3,21 @@
 import { AuthContext } from "@/store/AuthContext";
 import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
-import { AccountSchema } from "@/types/account";
 import ResetPasswordModal from "@/components/account/ResetPasswordModal";
+import { AccountRow } from "@/lib/dbTypes";
 
 export default function Account() {
     const context = useContext(AuthContext);
     const userId = context?.user?.id;
 
-    const [account, setAccount] = useState<AccountSchema | null>(null);
+    const [account, setAccount] = useState<AccountRow | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [isResettingPassword, setIsResettingPassword] = useState(false);
 
     const firstNameRef = useRef<HTMLInputElement>(null);
     const lastNameRef = useRef<HTMLInputElement>(null);
 
-    async function fetchAccountDetails(): Promise<AccountSchema | undefined> {
+    async function fetchAccountDetails(): Promise<AccountRow | undefined> {
         if (!userId) return undefined;
         // Fetch account details using userId
         // You can use context.accountId if you have it set up in your AuthContext
@@ -71,7 +71,7 @@ export default function Account() {
     );
     const viewingContent = (
         <div>
-            <p>Email: {account?.email}</p>
+            <p>Email: {context?.user?.email}</p>
             <p>First Name: {account?.first_name}</p>
             <p>Last Name: {account?.last_name}</p>
 

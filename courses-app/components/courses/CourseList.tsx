@@ -1,7 +1,7 @@
+import { CourseRow } from "@/lib/dbTypes";
 import CourseCard from "./CourseCard";
-import Course, { CourseCardInfo } from "@/types/Course";
 
-export default function CourseList({ courseCards, onSelectCourse }: { courseCards: CourseCardInfo[], onSelectCourse: (courseId: number) => void }) {
+export default function CourseList({ courseCards: courseRows, onSelectCourse }: { courseCards: CourseRow[], onSelectCourse: (courseId: number) => void }) {
     
     return (
         <>
@@ -9,9 +9,9 @@ export default function CourseList({ courseCards, onSelectCourse }: { courseCard
                 <h2>Course List</h2>
                 <button>View All</button>
                 <ul>
-                    {courseCards?.map((courseCard) => (
+                    {courseRows?.map((courseCard) => (
                         <li key={courseCard.id}>
-                            <CourseCard courseCard={courseCard} onClick={() => onSelectCourse(courseCard.id)} />
+                            <CourseCard courseRow={courseCard} onClick={() => onSelectCourse(courseCard.id)} />
                         </li>
                     ))}
                 </ul>

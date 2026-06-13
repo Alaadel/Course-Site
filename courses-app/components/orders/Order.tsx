@@ -25,7 +25,7 @@ export default function Order({ order }: { order: Order_ }) {
     return (
         <>
             <h1>Order Placed on {order.createdAt.toDateString()}</h1>
-            {course && <CourseCard courseCard={course.info} />}
+            {course && <CourseCard courseRow={course.info} />}
             <p>Amount Paid: ${order.amountPaid}</p>
         </>
     );

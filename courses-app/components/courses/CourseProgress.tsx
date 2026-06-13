@@ -1,18 +1,31 @@
-import { CourseProgress_ } from "@/types/account";
-import Course, { CourseCardInfo } from "@/types/Course";
+import { CourseRow } from "@/lib/dbTypes";
+import { getCourseById } from "@/lib/tables/courses";
+import { CourseProgress_ } from "@/lib/tables/progress";
+import { useEffect, useState } from "react";
 
-export default function CourseProgress({ progress, course }: { progress: CourseProgress_[]; course: Course }) {
-    const sectionsFinished = progress.find(p => p.courseId === course.info.id)?.sectionsFinished || 0;
-    const totalSections = course.details.sections.length || 0;
-    const progressPercentage = totalSections > 0 ? (sectionsFinished / totalSections) * 100 : 0;
+export default function CourseProgress({ progress, courseId }: { progress: CourseProgress_; courseId: number }) {
+    const finished = progress.lesson_completed_count;
+    const total = progress.lesson_count;
+    const progressPercentage = total > 0 ? (finished / total) * 100 : 0;
+
+    const [course, setCourse] = useState<CourseRow | null>(null);
+
+    async function fetchCourse() {
+        const course = await getCourseById(courseId);
+        setCourse(course);
+    }
+    
+    useEffect(() => {
+        fetchCourse();
+    }, [courseId]);
 
     return (
         <>
-            <img src={course.info.imageUrl} alt={course.info.title} />
-            <h2>{course.info.title}</h2>
-            <p>{sectionsFinished}/{totalSections} sections</p>
+            <img src={course?.thumbnail_url || ""} alt={course?.title} />
+            <h2>{course?.title}</h2>
+            <p>{finished}/{total} sections</p>
             <p>Progress: {progressPercentage.toFixed(2)}%</p>
-            <p>Last Accessed: {progress.find(p => p.courseId === course.info.id)?.lastAccessed.toLocaleDateString() || "N/A"}</p>
+            {/* <p>Last Accessed: {progress.last_accessed ? new Date(progress.last_accessed).toLocaleDateString() : "N/A"}</p> */}
         </>
     );
 }
