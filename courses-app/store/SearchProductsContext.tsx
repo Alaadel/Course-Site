@@ -4,7 +4,7 @@ import { CourseRow } from "@/lib/dbTypes";
 import { createContext, useState, ReactNode } from "react";
 
 interface SearchProductsContextType {
-    courseCards: CourseRow[];
+    courseRows: CourseRow[];
     setCourses: React.Dispatch<React.SetStateAction<CourseRow[]>>;
 }
 
@@ -14,7 +14,7 @@ export const SearchProductsProvider = ({ children }: { children: ReactNode }) =>
     const [courses, setCourses] = useState<CourseRow[]>([]);
 
     return (
-        <SearchProductsContext.Provider value={{ courseCards: courses, setCourses }}>
+        <SearchProductsContext.Provider value={{ courseRows: courses, setCourses }}>
             {children}
         </SearchProductsContext.Provider>
     );

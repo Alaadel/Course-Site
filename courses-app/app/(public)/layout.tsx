@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-// import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import { AuthContextProvider } from "@/store/AuthContext";
 import NavHeader from "@/components/nav-header/NavHeader";
@@ -21,6 +20,7 @@ export default function RootLayout({
         <body className="min-h-full flex flex-col">
           <NavHeader />
           {children}
+          <div id="modal"></div>  {/* this is where the modal will be injected, it is placed here to be a sibling of the main content, so that it can overlay it. */}
           <footer className="mt-auto text-center">By Alaadel, 2026</footer>
         </body>
       </html>

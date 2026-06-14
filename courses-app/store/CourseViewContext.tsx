@@ -1,3 +1,5 @@
+'use client';
+
 import { CourseRow } from "@/lib/dbTypes";
 import { createContext, useContext, useState } from "react";
 
@@ -9,21 +11,22 @@ interface CourseViewContextValue {
 
 export const CourseViewContext = createContext<CourseViewContextValue | undefined>(undefined);
 
-export function useCourseViewContext() {
-    const context = useContext(CourseViewContext);
-    if (!context) {
-        throw new Error("useCourseViewContext must be used within a CourseViewContext.Provider");
-    }
-
-    return context;
-}
-
 export function CourseViewContextProvider({ course, children }: { course: CourseRow | undefined, children: React.ReactNode }) {
+    // state drives the snapshot. snapshot is automatically updated when state changes
     const [selectedSectionIndex, setSelectedSectionIndex] = useState<number | null>(null);
     const [selectedLessonIndex, setSelectedLessonIndex] = useState<number | null>(null);
 
+    // snapshot, accessed by the context consumers
+    const contextValue: CourseViewContextValue = {
+        // passing the state values directly to the context value
+        course,
+        selectedSectionIndex,
+        selectedLessonIndex,
+    };
+
     return (
-        <CourseViewContext.Provider value={{ course, selectedSectionIndex, selectedLessonIndex }}>
+        // calling the provider + passing the snapshot
+        <CourseViewContext.Provider value={contextValue}>
             {children}
         </CourseViewContext.Provider>
     );

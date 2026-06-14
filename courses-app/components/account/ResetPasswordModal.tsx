@@ -1,3 +1,5 @@
+import Modal from "../common/Modal";
+
 export default function ResetPasswordModal({ onCancel }: { onCancel: () => void }) {
 
     function handleConfirmReset() {
@@ -10,7 +12,7 @@ export default function ResetPasswordModal({ onCancel }: { onCancel: () => void 
     }
 
     return (
-        <>
+        <Modal open={true} onClose={handleCancel}>
             <h2>Reset Password</h2>
             <p>This is where the reset password form will be displayed.</p>
 
@@ -19,6 +21,6 @@ export default function ResetPasswordModal({ onCancel }: { onCancel: () => void 
             
             <button onClick={handleConfirmReset}>Reset Password</button>
             <button onClick={handleCancel}>Cancel</button>
-        </>
+        </Modal>
     );
 }

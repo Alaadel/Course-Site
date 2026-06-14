@@ -2,7 +2,7 @@ import { CourseRow } from "@/lib/dbTypes";
 import CourseCard from "./CourseCard";
 import styles from "./CourseList.module.css";
 
-export default function CourseList({ title, courseCards: courseRows, onSelectCourse }: { title: string, courseCards: CourseRow[], onSelectCourse: (courseId: number) => void }) {
+export default function CourseList({ title, courseRows, onSelectCourse }: { title: string, courseRows?: CourseRow[], onSelectCourse: (courseId: number) => void }) {
     
     return (
         <>

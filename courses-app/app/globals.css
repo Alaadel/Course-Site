@@ -15,11 +15,17 @@ h1 { @apply text-main font-bold text-3xl; }
 h2 { @apply text-main font-semibold text-2xl; }
 
 @layer utilities {
-  .text-main {
+  .main-margin {
+    @apply mx-8 my-2;
+  }
+  .main-text {
     @apply text-main;
   }
-  .text-secondary {
+  .secondary-text {
     @apply text-secondary;
+  }
+  .main-rounded {
+    @apply rounded-xl;
   }
 }
 
