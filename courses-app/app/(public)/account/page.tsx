@@ -1,5 +1,6 @@
 'use client';
 
+import '@/app/globals.css';
 import { AuthContext } from "@/store/AuthContext";
 import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -88,15 +89,14 @@ export default function Account() {
         isEditing ? editingContent : viewingContent
     );
 
-
     return (
-        <>
+        <section>
             <h1>My Account</h1>
-            <p>Manage your profile and account settings.</p>
+            <p className="text-secondary">Manage your profile and account settings.</p>
 
             {context?.isSignedIn ? signedInContent : (
                 <p>Please <Link href="/login">login</Link> to view your account details.</p>
             )}
-        </>
+        </section>
     );
 }

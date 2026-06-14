@@ -2,12 +2,25 @@
 
 @theme {
   --color-background: #ffffff;
-  
+
   --color-main: #0F172A;
-  --color-secondary: #E2E8F0;
+  --color-secondary: #999999;
 
   --color-red: #EF4444;
   --color-gold: #F69E0A;
+}
+
+/*Define custom rules for header*/
+h1 { @apply text-main font-bold text-3xl; }
+h2 { @apply text-main font-semibold text-2xl; }
+
+@layer utilities {
+  .text-main {
+    @apply text-main;
+  }
+  .text-secondary {
+    @apply text-secondary;
+  }
 }
 
 /* :root {
