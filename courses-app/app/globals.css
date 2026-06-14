@@ -11,21 +11,41 @@
 }
 
 /*Define custom rules for header*/
-h1 { @apply text-main font-bold text-3xl; }
-h2 { @apply text-main font-semibold text-2xl; }
+h1 {
+  @apply text-main font-bold text-3xl;
+}
+
+h2 {
+  @apply text-main font-semibold text-2xl;
+}
 
 @layer utilities {
   .main-margin {
     @apply mx-8 my-2;
   }
+
   .main-text {
     @apply text-main;
   }
+
   .secondary-text {
     @apply text-secondary;
   }
+
   .main-rounded {
     @apply rounded-xl;
+  }
+
+  /*
+  was using 
+  @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+  but it didn't work because of -ve translation, so used css instead
+  */
+  .center-screen {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 }
 

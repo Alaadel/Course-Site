@@ -1,17 +1,24 @@
 import '@/app/globals.css';
+import { forwardRef } from 'react';
 
-export default function LabeledInput({ label, editable = false, ...props }: { label: string; editable?: boolean } & React.InputHTMLAttributes<HTMLInputElement>) {
-    let style = "py-1 w-full ";
-    if (editable) {
-        style += "border border-gray-300 rounded px-2";
-    } else {
-        style += "bg-white";
+const LabeledInput = forwardRef<HTMLInputElement, { label: string; editable?: boolean } & React.InputHTMLAttributes<HTMLInputElement>>(
+    ({ label, editable = false, ...props }, ref) => {
+        let style = "py-1 w-full ";
+        if (editable) {
+            style += "border border-gray-300 rounded px-2";
+        } else {
+            style += "bg-white";
+        }
+        
+        return (
+            <div className="main-margin flex flex-col">
+                <label className="secondary-text">{label}</label>
+                <input {...props} ref={ref} className={style}/>
+            </div>
+        );
     }
-    
-    return (
-        <div className="main-margin flex flex-col">
-            <label className="secondary-text">{label}</label>
-            <input {...props} className={style}/>
-        </div>
-    );
-}
+);
+
+LabeledInput.displayName = 'LabeledInput';
+
+export default LabeledInput;

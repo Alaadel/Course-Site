@@ -33,11 +33,11 @@ export async function getAccountByAuthId(authId: string): Promise<AccountRow | n
     return data as AccountRow;
 }
 
-export async function updateAccount(account: AccountRow): Promise<void> {
+export async function updateName(authId: string, firstName: string, lastName: string): Promise<void> {
     const { data, error } = await supabase
         .from('account')
-        .update({ first_name: account.first_name, last_name: account.last_name })
-        .eq('id', account.id);
+        .update({ first_name: firstName, last_name: lastName })
+        .eq('id', authId);
 
     if (error) {
         throw new Error(`Error updating account: ${error.message}`);

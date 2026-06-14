@@ -12,7 +12,7 @@ import HeaderSub from '@/components/common/HeaderSub';
 import LabeledInput from '@/components/common/LabeledInput';
 import Button from '@/components/common/Button';
 import { AccountPageContext, AccountPageContextProvider } from '@/store/AccountPageContext';
-import { getAccountByAuthId } from '@/lib/tables/account';
+import { getAccountByAuthId, updateName } from '@/lib/tables/account';
 import Modal from '@/components/common/Modal';
 
 export default function Account() {
@@ -51,24 +51,24 @@ export default function Account() {
 
     function handleEditAccount() {
         console.log("handleEditAccount");
-        // Implement account editing logic here, e.g., show a form to edit account details
+        accountPageCtx?.resetMessage();
         accountPageCtx?.setState('editing');
     }
     function handleSaveAccount() {
         console.log("handleSaveAccount");
-        // Implement account saving logic here, e.g., send updated account details to the server
-        const updatedAccount = {
-            ...account,
-            first_name: firstNameRef.current?.value,
-            last_name: lastNameRef.current?.value,
-        };
-        console.log("Updated account details:", updatedAccount);
-        // setAccount(updatedAccount);
-        accountPageCtx?.setState('normal');
+
+        try {
+            const updatedAccount = updateName(userId, firstNameRef.current?.value || '', lastNameRef.current?.value || '');
+            accountPageCtx?.setState('normal');
+        } catch (error) {
+            console.error("Error updating account:", error);
+            accountPageCtx?.setMessage("Error updating account. Please try again.");
+        }
     }
     function handleCancelEdit() {
         console.log("handleCancelEdit");
         // Implement cancel edit logic here, e.g., reset form fields to original account details
+        accountPageCtx?.resetMessage();
         accountPageCtx?.setState('normal');
     }
     function handleSignOut() {
@@ -76,10 +76,16 @@ export default function Account() {
         if (!authCtx) return;
         authCtx.signOut();
     }
+
     function handleResetPassword() {
         console.log("handleResetPassword");
-        // Implement password reset logic here, e.g., show a form to enter new password
+        accountPageCtx?.resetMessage();
         accountPageCtx?.setState('resettingPassword');
+    }
+    function handleCancelReset() {
+        console.log("handleCancelReset");
+        accountPageCtx?.resetMessage();
+        accountPageCtx?.setState('normal');
     }
 
     return (
@@ -101,19 +107,39 @@ export default function Account() {
 
                         <div className="main-margin flex items-center justify-between my-2">
                             <Button onClick={handleResetPassword}>Reset Password</Button>
-                            <Button color="bg-red-300" className="text-white" onClick={handleSignOut}>Log out</Button>
+                            <Button color="bg-red" className="text-white" onClick={handleSignOut}>Log out</Button>
                         </div>
 
-                        {isResettingPassword && (
-                            <ResetPasswordModal onCancel={() => accountPageCtx?.setState('normal')} />
-                        )}
 
-                        // Edit modal
+                        {/* Reset Password modal */}
+                        <Modal open={isResettingPassword} onClose={handleCancelReset}>
+                            <HeaderSub hNumber={3} header="Reset Password"
+                                sub={accountPageCtx?.message ? accountPageCtx.message : ""} />
+                            <div className="grid grid-cols-1 gap-4">
+                                <LabeledInput label="New Password" editable={true} type="password" ref={firstNameRef} defaultValue={account?.first_name || ''} />
+                                <LabeledInput label="Confirm Password" editable={true} type="password" ref={lastNameRef} defaultValue={account?.last_name || ''} />
+
+                                <div className="flex justify-between gap-2">
+                                    <Button color="bg-red" className="main-margin text-white" onClick={handleResetPassword}>Reset</Button>
+                                    <Button className="main-margin" onClick={handleCancelReset}>Cancel</Button>
+                                </div>
+                            </div>
+                        </Modal>
+
+
+                        {/* Edit modal */}
                         <Modal open={isEditing} onClose={handleCancelEdit}>
-                            <input type="text" ref={firstNameRef} defaultValue={account?.first_name || ''} placeholder="First Name" />
-                            <input type="text" ref={lastNameRef} defaultValue={account?.last_name || ''} placeholder="Last Name" />
-                            <Button onClick={handleSaveAccount}>Save</Button>
-                            <Button onClick={handleCancelEdit}>Cancel</Button>
+                            <HeaderSub hNumber={3} header="Edit Name"
+                                sub={accountPageCtx?.message ? accountPageCtx.message : ""} />
+                            <div className="grid grid-cols-1 gap-4">
+                                <LabeledInput label="First Name" editable={true} type="text" ref={firstNameRef} defaultValue={account?.first_name || ''} />
+                                <LabeledInput label="Last Name" editable={true} type="text" ref={lastNameRef} defaultValue={account?.last_name || ''} />
+
+                                <div className="flex justify-between gap-2">
+                                    <Button className="main-margin" onClick={handleSaveAccount}>Save</Button>
+                                    <Button className="main-margin" onClick={handleCancelEdit}>Cancel</Button>
+                                </div>
+                            </div>
                         </Modal>
 
                     </SectionCard>

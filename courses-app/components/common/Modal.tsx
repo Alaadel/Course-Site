@@ -4,10 +4,11 @@ import { createPortal } from 'react-dom';
 /*
     1- add a div with id="modal" in the root layout, so that the modal can be injected into it.
     2- use the 'open' prop to control the visibility of the modal.
+    3- provide an onClose callback to know when the modal is closed.
 */
 
 export default function Modal({ children, open, onClose, className = '' }: { children: React.ReactNode; open: boolean; onClose?: () => void; className?: string }) {
-    let style = `modal ${className}`;
+    let style = `modal center-screen max-w-md w-full p-8 rounded-xl ${className}`;
     
     // giving access to dialog element so it can be controlled programmatically
     const dialog = useRef<HTMLDialogElement>(null);
