@@ -11,7 +11,13 @@ export default function NavHeader() {
     return (
         <>
             <ul className={styles.NavHeader}>
-                <NavigationHeaderButton href="/login">Login</NavigationHeaderButton>
+                {/* show login only if not logged in */}
+                {!context?.isSignedIn && (
+                    <>
+                        <NavigationHeaderButton href="/login">Login</NavigationHeaderButton>
+                    </>
+                )}
+
                 <NavigationHeaderButton href="/products">Products</NavigationHeaderButton>
 
                 {context?.isSignedIn ? (

@@ -91,9 +91,8 @@ export default function Account() {
 
     return (
         <>
-            <h1>Account Page</h1>
-            <p>This is where you can view and manage your account details.</p>
-            <Link href="/">Go back to Home</Link>
+            <h1>My Account</h1>
+            <p>Manage your profile and account settings.</p>
 
             {context?.isSignedIn ? signedInContent : (
                 <p>Please <Link href="/login">login</Link> to view your account details.</p>
