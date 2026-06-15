@@ -24,6 +24,8 @@ interface AuthContextType {
 
     recoverPassword: (email: string) => Promise<void>;
     loginWithGoogle: () => Promise<void>;
+
+    resetFeedback: () => void;
 }
 
 // create the context
@@ -88,6 +90,9 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
             setIsAdmin(false);
         }
     };
+    const navigateToHome = () => {
+        router.push("/");   // redirect to home page after success
+    }
 
     // log-in/out callbacks to be provided to consumers so they can use them
     // they are added here because their results change the auth state
@@ -109,7 +114,7 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
                 setSuccess("Successfully registered!");
                 console.log("Successfully registered");
 
-                router.push("/"); // redirect to home page after successful registration
+                navigateToHome();
             }
         } catch (error) {
             setError(error instanceof Error ? error.message : String(error));
@@ -152,6 +157,8 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
                 setError(undefined);
                 setSuccess("Successfully signed in!");
                 console.log("Successfully signed in");
+
+                navigateToHome();
             }
         } catch (error) {
             setError(error instanceof Error ? error.message : String(error));
@@ -170,6 +177,8 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
                 setError(undefined);
                 setSuccess("Redirecting to Google for authentication...");
                 console.log("Redirecting to Google for authentication");
+
+                navigateToHome();
             }
         } catch (error) {
             setError(error instanceof Error ? error.message : String(error));
@@ -190,6 +199,8 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
                 setError(undefined);
                 setSuccess("Successfully signed out!");
                 console.log("Successfully signed out");
+
+                navigateToHome();
             }
         } catch (error) {
             setError(error instanceof Error ? error.message : String(error));
@@ -209,7 +220,12 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
         signOut: logout,
 
         recoverPassword: recoverPassword,
-        loginWithGoogle: loginWithGoogle
+        loginWithGoogle: loginWithGoogle,
+
+        resetFeedback: () => {
+            setError(undefined);
+            setSuccess(undefined);
+        }
     };
 
     return (

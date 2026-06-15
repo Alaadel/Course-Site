@@ -4,6 +4,7 @@ import Button from "@/components/common/Button";
 import FeedbackMessage from "@/components/common/FeedbackMessage";
 import HeaderSub from "@/components/common/HeaderSub";
 import LabeledInput from "@/components/common/LabeledInput";
+import LinkStyled from "@/components/common/LinkStyled";
 import SectionCard from "@/components/common/SectionCard";
 import { AuthContext } from "@/store/AuthContext";
 import Link from "next/dist/client/link";
@@ -62,7 +63,7 @@ export default function Register() {
                 </form>
 
                 <div className="flex justify-center">
-                    <p>Already registered? <Link href="/login">Login</Link></p>
+                    <p>Already registered? <LinkStyled href="/login">Login</LinkStyled></p>
                 </div>
             </SectionCard>
         </section>

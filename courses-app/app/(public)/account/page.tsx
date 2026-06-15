@@ -13,6 +13,8 @@ import Button from '@/components/common/Button';
 import { AccountPageContext, AccountPageContextProvider } from '@/store/AccountPageContext';
 import { getAccountByAuthId, updateName } from '@/lib/tables/account';
 import Modal from '@/components/common/Modal';
+import { supabase } from '@/lib/supabase-client';
+import LinkStyled from '@/components/common/LinkStyled';
 
 export default function Account() {
     // auth context based on supabase auth. provided to all pages
@@ -34,9 +36,19 @@ export default function Account() {
 
     // async method to fetch account details from the database
     async function fetchAccountDetails(): Promise<AccountRow | null> {
-        const account = await getAccountByAuthId(userId || '');
-        console.log(`Fetched account details for id ${userId}:`, account);
-        return account;
+        if (!userId) {
+            console.log("User ID is not available. Cannot fetch account details.");
+            return null;
+        }
+
+        try {
+            const account = await getAccountByAuthId(userId || '');
+            console.log(`Fetched account details for id ${userId}:`, account);
+            return account;
+        } catch (error) {
+            console.error("Error fetching account details:", error);
+            return null;
+        }
     }
 
     // use effect to call the async method to fetch account details
@@ -47,17 +59,40 @@ export default function Account() {
             }
         });
     }, [userId]);
+    // use effect to subscribe to table updates and refresh account details
+    useEffect(() => {
+        const channel = supabase.channel("account_channel");
+        if (!userId) return;
+
+        // must have Real Time enabled on the supabase table for this to work
+        channel.on(
+            "postgres_changes",
+            { event: "UPDATE", schema: "public", table: "account", filter: `id=eq.${userId}` },
+            (payload) => {
+                console.log("Received account update:", payload);
+                const accountData = payload.new as AccountRow;
+                setAccount(accountData);
+            }).subscribe((status) => {
+                console.log("account_channel subscription status:", status);
+            });
+
+        // cleanup function to unsubscribe from the channel when the component unmounts or userId changes
+        return () => {
+            console.log("Unsubscribing from account_channel");
+            supabase.removeChannel(channel);
+        };
+    }, [userId]);
 
     function handleEditAccount() {
         console.log("handleEditAccount");
         accountPageCtx?.resetMessage();
         accountPageCtx?.setState('editing');
     }
-    function handleSaveAccount() {
+    async function handleSaveAccount() {
         console.log("handleSaveAccount");
 
         try {
-            const updatedAccount = updateName(userId, firstNameRef.current?.value || '', lastNameRef.current?.value || '');
+            const updatedAccount = await updateName(userId, firstNameRef.current?.value || '', lastNameRef.current?.value || '');
             accountPageCtx?.setState('normal');
         } catch (error) {
             console.error("Error updating account:", error);
@@ -90,7 +125,7 @@ export default function Account() {
     return (
         <AccountPageContextProvider>
             {!authCtx?.isLoggedIn ? (
-                <p className="text-center main-text">Please <Link href="/login">login</Link> to view your account details.</p>
+                <p className="text-center main-text main-margin">Please <LinkStyled href="/login">login</LinkStyled> to view your account details.</p>
             ) : (
                 <>
                     <HeaderSub className="main-margin" hNumber={1} header="My Account" sub="Manage your profile and account settings." />

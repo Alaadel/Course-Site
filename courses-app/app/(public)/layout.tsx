@@ -17,7 +17,8 @@ export default function RootLayout({
       <html
         lang="en"
         className={`h-full antialiased`}>
-        <body className="min-h-full flex flex-col">
+        {/* using h-full to keep the footer at the bottom */}
+        <body className="h-full flex flex-col">
           <NavHeader />
           {children}
           <div id="modal"></div>  {/* this is where the modal will be injected, it is placed here to be a sibling of the main content, so that it can overlay it. */}

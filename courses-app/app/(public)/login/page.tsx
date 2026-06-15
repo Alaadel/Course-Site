@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { AuthContext } from "@/store/AuthContext";
 import SectionCard from "@/components/common/SectionCard";
 import HeaderSub from "@/components/common/HeaderSub";
@@ -9,6 +9,7 @@ import Button from "@/components/common/Button";
 import LabeledInput from "@/components/common/LabeledInput";
 import Separator from "@/components/common/Separator";
 import FeedbackMessage from "@/components/common/FeedbackMessage";
+import LinkStyled from "@/components/common/LinkStyled";
 
 export default function Login() {
     const context = useContext(AuthContext);
@@ -19,9 +20,9 @@ export default function Login() {
 
     // shortcuts
     const feedbackState = context?.error ? "error" : context?.success ? "success" : null;
-    const feedbackMessage = 
-        feedbackState === "error" ? context?.error : 
-        (feedbackState === "success" ? context?.success : "");
+    let feedbackMessage =
+        feedbackState === "error" ? context?.error :
+            (feedbackState === "success" ? context?.success : "");
 
     function handleLogin() {
         console.log("clicked login");
@@ -45,6 +46,11 @@ export default function Login() {
         context.loginWithGoogle();
     }
 
+    // empty useEffect to reset feedback messages when the component mounts
+    useEffect(() => {
+        context?.resetFeedback();
+    }, []);
+
     return (
         <section>
             <HeaderSub className="main-margin" hNumber={1} header="Login" sub="" />
@@ -65,7 +71,7 @@ export default function Login() {
                 </div>
 
                 <div className="flex justify-center">
-                    <p>Need an account? <Link href="/register">Register</Link></p>
+                    <p>Need an account? <LinkStyled href="/register">Register</LinkStyled></p>
                 </div>
 
                 <FeedbackMessage state={feedbackState} message={feedbackMessage} />
