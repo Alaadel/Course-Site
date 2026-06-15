@@ -36,7 +36,7 @@ export default function Register() {
         handleRegister(email, password, firstName, lastName);
     }
     function handleRegister(email: string, password: string, firstName: string, lastName: string) {
-        console.log("handleRegister");
+        console.log(`handleRegister ${email} ${firstName} ${lastName}`);
 
         if (!context) return;
 
@@ -49,10 +49,12 @@ export default function Register() {
 
             <SectionCard>
                 <form onSubmit={handleFormSubmit}>
-                    <LabeledInput ref={emailRef} type="email" label="Email" editable={true} required={true} />
-                    <LabeledInput ref={passwordRef} type="password" label="Password" editable={true} required={true} />
-                    <LabeledInput ref={firstNameRef} type="text" label="First Name" editable={true} required={true} />
-                    <LabeledInput ref={lastNameRef} type="text" label="Last Name" editable={true} required={true} />
+                    <LabeledInput name="email" ref={emailRef} type="email" label="Email" editable={true} required={true} />
+                    <LabeledInput name="password" ref={passwordRef} type="password" label="Password" editable={true} required={true} />
+                    <LabeledInput name="firstName" ref={firstNameRef} type="text" label="First Name" editable={true} required={true} />
+                    <LabeledInput name="lastName" ref={lastNameRef} type="text" label="Last Name" editable={true} required={true} />
+
+                    <FeedbackMessage state={feedbackState} message={feedbackMessage} />
 
                     <div className="flex justify-end items-center main-margin">
                         <Button className="right" type="submit" color="bg-blue">Register</Button>
@@ -62,8 +64,6 @@ export default function Register() {
                 <div className="flex justify-center">
                     <p>Already registered? <Link href="/login">Login</Link></p>
                 </div>
-
-                <FeedbackMessage state={feedbackState} message={feedbackMessage} />
             </SectionCard>
         </section>
     );

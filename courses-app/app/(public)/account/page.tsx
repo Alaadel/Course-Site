@@ -92,7 +92,7 @@ export default function Account() {
             {!authCtx?.isLoggedIn ? (
                 <p className="text-center main-text">Please <Link href="/login">login</Link> to view your account details.</p>
             ) : (
-                <section>
+                <>
                     <HeaderSub className="main-margin" hNumber={1} header="My Account" sub="Manage your profile and account settings." />
 
                     <SectionCard>
@@ -144,7 +144,7 @@ export default function Account() {
                         </Modal>
 
                     </SectionCard>
-                </section>
+                </>
             )}
         </AccountPageContextProvider>
     );

@@ -4,6 +4,7 @@ import { createContext, useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase-client";
 import { createAccount } from "@/lib/tables/account";
 import { isAdmin } from "@/lib/tables/account";
+import { useRouter } from "next/navigation";
 
 // context type definition
 interface AuthContextType {
@@ -30,6 +31,9 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 // provider component
 export function AuthContextProvider({ children }: { children: React.ReactNode }) {
+    // router
+    const router = useRouter();
+
     // state that will be available for context consumers
     const [user, setUser] = useState<any>(null);
     const [session, setSession] = useState<any>(null);
@@ -91,19 +95,21 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
         console.log("auth context register");
 
         try {
-            const { error } = await supabase.auth.signUp({ email, password });
+            const { data, error } = await supabase.auth.signUp({ email, password });
 
             if (error) {
                 setError(error.message);
                 console.log("Error registering:", error.message);
             } else {
-                await createAccount(user?.id || '', firstName, lastName);
+                await createAccount(data.user?.id || '', firstName, lastName);
 
                 await updateAdminState();
 
                 setError(undefined);
                 setSuccess("Successfully registered!");
                 console.log("Successfully registered");
+
+                router.push("/"); // redirect to home page after successful registration
             }
         } catch (error) {
             setError(error instanceof Error ? error.message : String(error));
@@ -135,7 +141,7 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
         console.log("auth context login");
 
         try {
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
             if (error) {
                 setError(error.message);
