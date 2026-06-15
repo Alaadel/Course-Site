@@ -1,8 +1,11 @@
 import { supabase } from "@/lib/supabase-client";
 
 import type { InstructorRow } from "@/lib/dbTypes";
+import { sanitizeInput } from "../sanitize";
 
 export async function createInstructor(name: string): Promise<void> {
+    [name] = sanitizeInput(name);
+    
     const { data, error } = await supabase
         .from('instructor')
         .insert({ name });

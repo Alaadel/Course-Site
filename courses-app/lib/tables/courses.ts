@@ -1,6 +1,7 @@
 import { supabase } from "../supabase-client";
 
 import type { CourseRow } from "../dbTypes";
+import { sanitizeInput } from "../sanitize";
 
 export async function getCourseById(courseId: number): Promise<CourseRow> {
     const { data, error } = await supabase
@@ -61,6 +62,8 @@ export async function getPopularCourses(limit: number): Promise<CourseRow[]> {
 }
 
 export async function getSearchCourses(searchTerm: string, tags: string[], priceFrom?: number, priceTo?: number): Promise<CourseRow[]> {
+    [searchTerm, ...tags] = sanitizeInput(searchTerm, ...tags);
+    
     let query = supabase
         .from('course')
         .select('*')

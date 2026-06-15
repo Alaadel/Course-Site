@@ -18,12 +18,12 @@ export default function NavHeader() {
                 <NavigationHeaderButton href="/">Home</NavigationHeaderButton>
                 <NavigationHeaderButton href="/products">Products</NavigationHeaderButton>
 
-                {context?.isSignedIn && (<NavigationHeaderButton href="/courses">Courses</NavigationHeaderButton>)}
-                {context?.isSignedIn && (<NavigationHeaderButton href="/orders">Orders</NavigationHeaderButton>)}
-                {context?.isSignedIn && (<NavigationHeaderButton href="/account">Account</NavigationHeaderButton>)}
+                {context?.isLoggedIn && (<NavigationHeaderButton href="/courses">Courses</NavigationHeaderButton>)}
+                {context?.isLoggedIn && (<NavigationHeaderButton href="/orders">Orders</NavigationHeaderButton>)}
+                {context?.isLoggedIn && (<NavigationHeaderButton href="/account">Account</NavigationHeaderButton>)}
 
-                {!context?.isSignedIn && (<NavigationHeaderButton href="/login">Login</NavigationHeaderButton>)}
-                {!context?.isSignedIn && (<NavigationHeaderButton href="/signup">Sign Up</NavigationHeaderButton>)}
+                {!context?.isLoggedIn && (<NavigationHeaderButton href="/login">Login</NavigationHeaderButton>)}
+                {!context?.isLoggedIn && (<NavigationHeaderButton href="/register">Register</NavigationHeaderButton>)}
 
                 {/* <Link href="/admin">Go to Admin Page</Link> */}
             </ul>

@@ -15,6 +15,7 @@ export type EnrollmentRow = Database["public"]["Tables"]["enrollment"]["Row"];
 export type ProgressRow = Database["public"]["Tables"]["progress"]["Row"];
 
 export type ActivityRow = Database["public"]["Tables"]["activity"]["Row"];
+export type UserRoleRow = Database["public"]["Tables"]["user_roles"]["Row"];
 
 export type EnrollmentOrder = {
     account_id: string;

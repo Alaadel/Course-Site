@@ -1,8 +1,11 @@
 import { supabase } from "@/lib/supabase-client";
 
 import type { EnrollmentOrder, EnrollmentRow } from "@/lib/dbTypes";
+import { sanitizeInput } from "../sanitize";
 
 export async function purchaseCourse(accountId: string, courseId: number): Promise<void> {
+    [accountId] = sanitizeInput(accountId);
+
     const { data, error } = await supabase
         .from('enrollment')
         .insert({ account_id: accountId, course_id: courseId });
@@ -15,6 +18,8 @@ export async function purchaseCourse(accountId: string, courseId: number): Promi
 }
 
 export async function getEnrolledCourses(accountId: string): Promise<number[]> {
+    [accountId] = sanitizeInput(accountId);
+
     const { data, error } = await supabase
         .from('enrollment')
         .select('course_id')
@@ -28,6 +33,8 @@ export async function getEnrolledCourses(accountId: string): Promise<number[]> {
 }
 
 export async function getOrders(accountId: string): Promise<EnrollmentOrder[]> {
+    [accountId] = sanitizeInput(accountId);
+
     const { data, error } = await supabase
         .from('enrollment')
         .select('*')
@@ -42,6 +49,8 @@ export async function getOrders(accountId: string): Promise<EnrollmentOrder[]> {
 }
 
 export async function isEnrolled(accountId: string, courseId: number): Promise<boolean> {
+    [accountId] = sanitizeInput(accountId);
+
     const { data, error } = await supabase
         .from('enrollment')
         .select('id')
@@ -60,6 +69,8 @@ export async function isEnrolled(accountId: string, courseId: number): Promise<b
 }
 
 export async function getNumberOfEnrolledCoursesInAccount(accountId: string): Promise<number> {
+    [accountId] = sanitizeInput(accountId);
+    
     const { data, error } = await supabase
         .from('enrollment')
         .select('course_id', { count: 'exact' })

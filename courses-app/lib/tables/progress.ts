@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase-client";
+import { sanitizeInput } from "../sanitize";
 
 // course table contain course data, section table contains section data, lesson table contains lesson data
 // progress table contains account_id, lesson_id, complete 
@@ -55,6 +56,8 @@ export type LessonProgress_ = {
 
 // getCourseProgress: joins course, section, lesson and progress tables to get the progress of all lessons in a course for an account
 export async function getCourseIndexAndProgress(accountId: string, courseId: number): Promise<CourseProgress_> {
+    [accountId] = sanitizeInput(accountId);
+    
     const { data, error } = await supabase
         .from('course')
         .select(`
@@ -97,6 +100,8 @@ export type AccountCourseProgress = {
 }
 
 export async function getAccountCourseProgress(accountId: string): Promise<AccountCourseProgress[]> {
+    [accountId] = sanitizeInput(accountId);
+    
     const { data, error } = await supabase
         .from('course')
         .select(`
@@ -137,6 +142,8 @@ export async function getAccountCourseProgress(accountId: string): Promise<Accou
 
 // markLessonAsStarted: creates a new entry in the progress table for the account and lesson, with complete set to false
 export async function markLessonAsStarted(accountId: string, lessonId: number): Promise<void> {
+    [accountId] = sanitizeInput(accountId);
+
     const { error } = await supabase
         .from('progress')
         .insert({ account_id: accountId, lesson_id: lessonId, complete: false });
@@ -149,6 +156,8 @@ export async function markLessonAsStarted(accountId: string, lessonId: number): 
 
 // markLessonAsFinished: updates the progress table to mark the lesson as finished for the account
 export async function markLessonAsFinished(accountId: string, lessonId: number): Promise<void> {
+    [accountId] = sanitizeInput(accountId);
+
     const { error } = await supabase
         .from('progress')
         .update({ complete: true })

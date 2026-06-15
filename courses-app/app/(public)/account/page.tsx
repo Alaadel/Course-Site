@@ -90,7 +90,7 @@ export default function Account() {
 
     return (
         <AccountPageContextProvider>
-            {authCtx?.isSignedIn ? (
+            {authCtx?.isLoggedIn ? (
                 <section>
                     <HeaderSub className="main-margin" hNumber={1} header="My Account" sub="Manage your profile and account settings." />
 
