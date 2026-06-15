@@ -38,21 +38,6 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
     const [success, setSuccess] = useState<string | undefined>(undefined);
     const [is_admin, setIsAdmin] = useState(false);
 
-    const contextSnapshot: AuthContextType = {
-        user, session, isLoggedIn, isAdmin: is_admin, error, success,
-
-        getUserId() {
-            return user?.id || null;
-        },
-
-        signIn: async (email: string, password: string) => { },
-        register: async (email: string, password: string, firstName: string, lastName: string) => { },
-        signOut: async () => { },
-
-        recoverPassword: async (email: string) => { },
-        loginWithGoogle: async () => { }
-    };
-
     // async function to handle data
     async function fetchSession() {
         const sessionData = await supabase.auth.getSession();
@@ -103,6 +88,8 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
     // log-in/out callbacks to be provided to consumers so they can use them
     // they are added here because their results change the auth state
     const register = async (email: string, password: string, firstName: string, lastName: string) => {
+        console.log("auth context register");
+
         try {
             const { error } = await supabase.auth.signUp({ email, password });
 
@@ -124,6 +111,8 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
         }
     };
     const recoverPassword = async (email: string) => {
+        console.log("auth context recoverPassword");
+
         try {
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
                 redirectTo: window.location.origin + "/reset-password"
@@ -143,6 +132,8 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
         }
     };
     const login = async (email: string, password: string) => {
+        console.log("auth context login");
+
         try {
             const { error } = await supabase.auth.signInWithPassword({ email, password });
 
@@ -162,6 +153,8 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
         }
     };
     const loginWithGoogle = async () => {
+        console.log("auth context loginWithGoogle");
+
         try {
             const { error } = await supabase.auth.signInWithOAuth({ provider: "google" });
             if (error) {
@@ -178,6 +171,8 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
         }
     };
     const logout = async () => {
+        console.log("auth context logout");
+
         try {
             const { error } = await supabase.auth.signOut();
             await updateAdminState();   // reset admin state, regardless of logout success
@@ -196,6 +191,21 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
         }
     };
     
+    const contextSnapshot: AuthContextType = {
+        user, session, isLoggedIn, isAdmin: is_admin, error, success,
+
+        getUserId() {
+            return user?.id || null;
+        },
+
+        signIn: login,
+        register: register,
+        signOut: logout,
+
+        recoverPassword: recoverPassword,
+        loginWithGoogle: loginWithGoogle
+    };
+
     return (
         <AuthContext.Provider value={contextSnapshot}>
             {children}

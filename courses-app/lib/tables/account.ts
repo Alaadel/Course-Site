@@ -4,6 +4,8 @@ import { AccountRow } from "@/lib/dbTypes";
 import { sanitizeInput } from "@/lib/sanitize";
 
 export async function isAdmin(authId: string): Promise<boolean> {
+    console.log(`isAdmin ${authId} ...`);
+
     [authId] = sanitizeInput(authId);
 
     const { data, error } = await supabase
@@ -23,6 +25,8 @@ export async function isAdmin(authId: string): Promise<boolean> {
 }
 
 export async function createAccount(authId: string, firstName: string, lastName?: string): Promise<void> {
+    console.log(`createAccount ${authId} ...`);
+
     [authId,firstName,lastName] = sanitizeInput(authId, firstName, lastName || "");
 
     const { data, error } = await supabase
@@ -39,6 +43,8 @@ export async function createAccount(authId: string, firstName: string, lastName?
 }
 
 export async function getAccountByAuthId(authId: string): Promise<AccountRow | null> {
+    console.log(`getAccountByAuthId ${authId} ...`);
+
     [authId] = sanitizeInput(authId);
 
     const { data, error } = await supabase
@@ -58,6 +64,8 @@ export async function getAccountByAuthId(authId: string): Promise<AccountRow | n
 }
 
 export async function updateName(authId: string, firstName: string, lastName: string): Promise<void> {
+    console.log(`updateName ${authId} ...`);
+
     [authId, firstName, lastName] = sanitizeInput(authId, firstName, lastName);
 
     const { data, error } = await supabase
@@ -71,6 +79,8 @@ export async function updateName(authId: string, firstName: string, lastName: st
 }
 
 export async function resetPassword(newPassword: string): Promise<void> {
+    console.log(`resetPassword ...`);
+
     [newPassword] = sanitizeInput(newPassword);
     
     const { data, error } = await supabase.auth.updateUser({ password: newPassword });
@@ -83,6 +93,8 @@ export async function resetPassword(newPassword: string): Promise<void> {
 }
 
 export async function logOut() {
+    console.log(`logOut ...`);
+    
     const { error } = await supabase.auth.signOut();
 
     if (error) {
