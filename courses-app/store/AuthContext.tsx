@@ -12,13 +12,13 @@ interface AuthContextType {
     isLoggedIn: boolean;
     isAdmin: boolean;
 
-    error: string | null;
-    success: string | null;
+    error: string | undefined;
+    success: string | undefined;
 
     getUserId(): string | null;
 
     signIn: (email: string, password: string) => Promise<void>;
-    register: (email: string, password: string) => Promise<void>;
+    register: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
     signOut: () => Promise<void>;
 
     recoverPassword: (email: string) => Promise<void>;
@@ -34,8 +34,8 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
     const [user, setUser] = useState<any>(null);
     const [session, setSession] = useState<any>(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
+    const [error, setError] = useState<string | undefined>(undefined);
+    const [success, setSuccess] = useState<string | undefined>(undefined);
     const [is_admin, setIsAdmin] = useState(false);
 
     const contextSnapshot: AuthContextType = {
@@ -46,7 +46,7 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
         },
 
         signIn: async (email: string, password: string) => { },
-        register: async (email: string, password: string) => { },
+        register: async (email: string, password: string, firstName: string, lastName: string) => { },
         signOut: async () => { },
 
         recoverPassword: async (email: string) => { },
@@ -114,7 +114,7 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
 
                 await updateAdminState();
 
-                setError(null);
+                setError(undefined);
                 setSuccess("Successfully registered!");
                 console.log("Successfully registered");
             }
@@ -128,12 +128,12 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
                 redirectTo: window.location.origin + "/reset-password"
             });
-            
+
             if (error) {
                 setError(error.message);
                 console.log("Error recovering password:", error.message);
             } else {
-                setError(null);
+                setError(undefined);
                 setSuccess("Password recovery email sent!");
                 console.log("Password recovery email sent");
             }
@@ -152,7 +152,7 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
             } else {
                 await updateAdminState();
 
-                setError(null);
+                setError(undefined);
                 setSuccess("Successfully signed in!");
                 console.log("Successfully signed in");
             }
@@ -168,7 +168,7 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
                 setError(error.message);
                 console.log("Error logging in with Google:", error.message);
             } else {
-                setError(null);
+                setError(undefined);
                 setSuccess("Redirecting to Google for authentication...");
                 console.log("Redirecting to Google for authentication");
             }
@@ -186,7 +186,7 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
                 setError(error.message);
                 console.log("Error signing out:", error.message);
             } else {
-                setError(null);
+                setError(undefined);
                 setSuccess("Successfully signed out!");
                 console.log("Successfully signed out");
             }

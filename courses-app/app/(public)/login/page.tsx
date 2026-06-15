@@ -3,6 +3,12 @@
 import Link from "next/link";
 import { useContext, useRef } from "react";
 import { AuthContext } from "@/store/AuthContext";
+import SectionCard from "@/components/common/SectionCard";
+import HeaderSub from "@/components/common/HeaderSub";
+import Button from "@/components/common/Button";
+import LabeledInput from "@/components/common/LabeledInput";
+import Separator from "@/components/common/Separator";
+import FeedbackMessage from "@/components/common/FeedbackMessage";
 
 export default function Login() {
     const context = useContext(AuthContext);
@@ -11,6 +17,12 @@ export default function Login() {
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
 
+    // shortcuts
+    const feedbackState = context?.error ? "error" : context?.success ? "success" : null;
+    const feedbackMessage = 
+        feedbackState === "error" ? context?.error : 
+        (feedbackState === "success" ? context?.success : "");
+
     function handleLogin() {
         console.log("clicked login");
         if (!context) return;
@@ -18,13 +30,7 @@ export default function Login() {
 
         context.signIn(emailRef.current.value, passwordRef.current.value);
     }
-    function handleRegister() {
-        console.log("clicked register");
-        if (!context) return;
-        if (!emailRef.current || !passwordRef.current) return;
 
-        context.register(emailRef.current.value, passwordRef.current.value);
-    }
     function handleForgotPassword() {
         console.log("clicked forgot password");
         if (!context) return;
@@ -35,26 +41,35 @@ export default function Login() {
     function handleGoogleLogin() {
         console.log("clicked google login");
         if (!context) return;
-        
+
         context.loginWithGoogle();
     }
 
     return (
-        <>
-            <h1>Login Page</h1>
-            <Link href="/">Home</Link>
+        <section>
+            <HeaderSub className="main-margin" hNumber={1} header="Login" sub="" />
 
-            <button onClick={handleGoogleLogin}>Login with Google</button>
+            <SectionCard>
+                <div className="flex justify-center main-margin">
+                    <Button onClick={handleGoogleLogin}>Login with Google</Button>
+                </div>
 
-            <input type="email" placeholder="Email" ref={emailRef} />
-            <input type="password" placeholder="Password" ref={passwordRef} />
+                <Separator />
 
-            <button onClick={handleForgotPassword}>Forgot Password?</button>
-            <button onClick={handleLogin}>Login</button>
-            <button onClick={handleRegister}>Register</button>
+                <LabeledInput label="Email" type="email" ref={emailRef} editable={true} />
+                <LabeledInput label="Password" type="password" ref={passwordRef} editable={true} />
 
-            {context?.error && <p style={{ color: "red" }}>{context.error}</p>}
-            {context?.success && <p style={{ color: "green" }}>{context.success}</p>}
-        </>
+                <div className="flex justify-between items-center main-margin">
+                    <Button onClick={handleForgotPassword}>Forgot Password?</Button>
+                    <Button color="bg-red" onClick={handleLogin}>Login</Button>
+                </div>
+
+                <div className="flex justify-center">
+                    <p>Need an account? <Link href="/register">Register</Link></p>
+                </div>
+
+                <FeedbackMessage state={feedbackState} message={feedbackMessage} />
+            </SectionCard>
+        </section>
     );
 }
