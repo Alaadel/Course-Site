@@ -1,54 +1,69 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #ffffff;
+    --color-background: #ffffff;
 
-  --color-main: #0F172A;
-  --color-secondary: #999999;
+    --color-main: #0F172A;
+    --color-secondary: #999999;
 
-  --color-red: #EF4444;
-  --color-gold: #F69E0A;
-  --color-green: #22C55E;
-  --color-blue: #3B82F6;
+    --color-red: #EF4444;
+    --color-gold: #F69E0A;
+    --color-green: #22C55E;
+    --color-blue: #3B82F6;
 }
 
 /*Define custom rules for header*/
 h1 {
-  @apply text-main font-bold text-3xl;
+    @apply text-main font-bold text-3xl;
 }
 
 h2 {
-  @apply text-main font-semibold text-2xl;
+    @apply text-main font-semibold text-2xl;
 }
 
 @layer utilities {
-  .main-margin {
-    @apply mx-8 my-2;
-  }
+    .main-margin {
+        @apply mx-8 my-2;
+    }
 
-  .main-text {
-    @apply text-main;
-  }
+    .main-text {
+        @apply text-main;
+    }
 
-  .secondary-text {
-    @apply text-secondary;
-  }
+    .secondary-text {
+        @apply text-secondary;
+    }
 
-  .main-rounded {
-    @apply rounded-xl;
-  }
+    .main-rounded {
+        @apply rounded-xl;
+    }
 
-  /*
+    /*
   was using 
   @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
   but it didn't work because of -ve translation, so used css instead
   */
-  .center-screen {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
+    .center-screen {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .black-button {
+        @apply bg-main text-white border border-main;
+
+        &:hover {
+            @apply bg-white text-main;
+        }
+    }
+    .white-button {
+        @apply bg-white text-main border border-main;
+
+        &:hover {
+            @apply bg-main text-white;
+        }
+    }
 }
 
 /* :root {
