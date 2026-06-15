@@ -4,23 +4,26 @@ import { AuthContext } from "@/store/AuthContext";
 import styles from "./NavHeader.module.css";
 import { useContext } from "react";
 import NavigationHeaderButton from "./NavHeaderButton";
+import { useRouter } from "next/navigation";
 
 export default function NavHeader() {
     const context = useContext(AuthContext);
+    const router = useRouter();
 
     return (
         <header><nav>
             <ul className={styles.NavHeader}>
                 {/* show login only if not logged in */}
-                {!context?.isSignedIn && (<li><NavigationHeaderButton href="/login">Login</NavigationHeaderButton></li>)}
 
-                <li><NavigationHeaderButton href="/products">Products</NavigationHeaderButton></li>
+                <NavigationHeaderButton href="/">Home</NavigationHeaderButton>
+                <NavigationHeaderButton href="/products">Products</NavigationHeaderButton>
 
-                {context?.isSignedIn && (<li><NavigationHeaderButton href="/courses">Courses</NavigationHeaderButton></li>)}
-                {context?.isSignedIn && (<li><NavigationHeaderButton href="/orders">Orders</NavigationHeaderButton></li>)}
-                {context?.isSignedIn && (<li><NavigationHeaderButton href="/account">Account</NavigationHeaderButton></li>)}
+                {context?.isSignedIn && (<NavigationHeaderButton href="/courses">Courses</NavigationHeaderButton>)}
+                {context?.isSignedIn && (<NavigationHeaderButton href="/orders">Orders</NavigationHeaderButton>)}
+                {context?.isSignedIn && (<NavigationHeaderButton href="/account">Account</NavigationHeaderButton>)}
 
-                {!context?.isSignedIn && (<li><NavigationHeaderButton href="/signup">Sign Up</NavigationHeaderButton></li>)}
+                {!context?.isSignedIn && (<NavigationHeaderButton href="/login">Login</NavigationHeaderButton>)}
+                {!context?.isSignedIn && (<NavigationHeaderButton href="/signup">Sign Up</NavigationHeaderButton>)}
 
                 {/* <Link href="/admin">Go to Admin Page</Link> */}
             </ul>

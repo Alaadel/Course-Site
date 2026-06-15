@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase-client";
+import { createAccount } from "@/lib/tables/account";
 
 // context type definition
 interface AuthContextType {
@@ -113,6 +114,9 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
                 setError(null);
                 setSuccess("Successfully registered!");
                 console.log("Successfully registered");
+
+                const userId = await supabase.auth.getUser().then(res => res.data.user?.id);
+                createAccount(userId || '', '', '');
             }
         } catch (error) {
             setError(error instanceof Error ? error.message : String(error));
