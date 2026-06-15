@@ -24,17 +24,38 @@ export async function isAdmin(authId: string): Promise<boolean> {
     return data.role === 'admin';
 }
 
+export async function accountExists(authId: string): Promise<boolean> {
+    console.log(`accountExists ${authId} ...`);
+
+    [authId] = sanitizeInput(authId);
+
+    const { data, error } = await supabase
+        .from('account')
+        .select('id')
+        .eq('id', authId)
+        .single();
+        
+    if (error) {
+        if (error.code === 'PGRST116') { // No rows found
+            return false; // account does not exist
+        }
+        throw new Error(`Error checking account existence: ${error.message}`);
+    }
+
+    return true; // account exists
+}
+
 export async function createAccount(authId: string, firstName: string, lastName?: string): Promise<void> {
     console.log(`createAccount ${authId} ...`);
 
-    [authId,firstName,lastName] = sanitizeInput(authId, firstName, lastName || "");
+    [authId, firstName, lastName] = sanitizeInput(authId, firstName, lastName || "");
 
     const { data, error } = await supabase
         .from('account')
         .insert({ id: authId, first_name: firstName, last_name: lastName })
     // .select()   // return the inserted row
     // .single();  // we expect only one row to be inserted, so do not return an array
-    
+
     if (error) {
         throw new Error(`Error creating account: ${error.message}`);
     }
@@ -82,7 +103,7 @@ export async function resetPassword(newPassword: string): Promise<void> {
     console.log(`resetPassword ...`);
 
     [newPassword] = sanitizeInput(newPassword);
-    
+
     const { data, error } = await supabase.auth.updateUser({ password: newPassword });
 
     if (error) {
@@ -94,7 +115,7 @@ export async function resetPassword(newPassword: string): Promise<void> {
 
 export async function logOut() {
     console.log(`logOut ...`);
-    
+
     const { error } = await supabase.auth.signOut();
 
     if (error) {

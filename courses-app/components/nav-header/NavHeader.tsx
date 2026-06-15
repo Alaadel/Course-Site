@@ -25,7 +25,7 @@ export default function NavHeader() {
                 {!context?.isLoggedIn && (<NavigationHeaderButton href="/login">Login</NavigationHeaderButton>)}
                 {!context?.isLoggedIn && (<NavigationHeaderButton href="/register">Register</NavigationHeaderButton>)}
 
-                {/* <Link href="/admin">Go to Admin Page</Link> */}
+                {(context?.isLoggedIn && context?.isAdmin) && (<NavigationHeaderButton href="/admin">Admin</NavigationHeaderButton>)}
             </ul>
         </nav></header>
     )

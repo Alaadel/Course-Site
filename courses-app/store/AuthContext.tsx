@@ -2,9 +2,10 @@
 
 import { createContext, useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase-client";
-import { createAccount } from "@/lib/tables/account";
+import { accountExists, createAccount } from "@/lib/tables/account";
 import { isAdmin } from "@/lib/tables/account";
 import { useRouter } from "next/navigation";
+import { AuthChangeEvent, Session } from "@supabase/auth-js/dist/module/lib/types";
 
 // context type definition
 interface AuthContextType {
@@ -61,6 +62,38 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
             setUser(null);
         }
     }
+    async function checkNewAccount(event: AuthChangeEvent, session: Session | null) {
+        try {
+            // normal register already calls createAccount,
+            // oauth login has to create an account and associate it with the oauth user
+            // TODO: this could be moved to a supabase function that is called when a user is added to auth table
+            if (event === "SIGNED_IN" && session?.user) {
+                // Could be OAuth or email sign-in
+                const provider = session.user.app_metadata?.provider;
+                console.log("Sign-in event, provider:", provider);
+
+                if (provider !== "email") { //== "google") {
+                    // OAuth - could be first-time or returning user
+                    // Check if account exists in database
+                    const user = session.user;
+                    const userId = user.id;
+                    const existingAccount = await accountExists(userId);
+
+                    if (!existingAccount) {
+                        // First-time OAuth user - create account
+                        console.log("New OAuth user, creating account");
+                        const displayName = user.user_metadata?.full_name || "User";
+                        await createAccount(userId, displayName, '');
+                    } else {
+                        // Returning OAuth user
+                        console.log("Returning OAuth user");
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Error handling auth state change:", error);
+        }
+    }
 
     // sync function to handle data + cleanup
     useEffect(() => {
@@ -68,10 +101,12 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
         fetchSession();
 
         // listen for updates
-        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+        const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
             setSession(session);
             setUser(session?.user ?? null);
             setIsLoggedIn(!!session);
+
+            await checkNewAccount(event, session);
         });
 
         // cleanup = return a function that unsubscribes
@@ -79,12 +114,28 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
             authListener?.subscription.unsubscribe();
         };
     }, []); // no dependencies, so this runs once on mount and sets up the listener. (using dependencies will run it every time the dependencies change)
-
+    
+    // instead of checking admin state inside other useEffects
+    // (where the state is still not-committed and the context value is stale),
+    // use a dedicated useEffect that listens to changes in the user state, 
+    // so that it always has the latest user data and updates the admin state accordingly
+    useEffect(() => {
+        if (user?.id) {
+            isAdmin(user.id).then((isAdminRole) => {
+                setIsAdmin(isAdminRole);
+            });
+        } else {
+            setIsAdmin(false);
+        }
+    }, [user]);
 
     const updateAdminState = async () => {
         const userId = contextSnapshot.getUserId();
+        console.log(`Updating admin state for user ID: ${userId}`);
+
         if (userId) {
             const isAdminRole = await isAdmin(userId);
+            console.log(`User ${userId} admin role: ${isAdminRole}`);
             setIsAdmin(isAdminRole);
         } else {
             setIsAdmin(false);
@@ -169,22 +220,58 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
         console.log("auth context loginWithGoogle");
 
         try {
-            const { error } = await supabase.auth.signInWithOAuth({ provider: "google" });
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: "google",
+                options: {
+                    redirectTo: window.location.origin // User returns here after Google auth
+                }
+            });
+
             if (error) {
                 setError(error.message);
                 console.log("Error logging in with Google:", error.message);
             } else {
-                setError(undefined);
-                setSuccess("Redirecting to Google for authentication...");
-                console.log("Redirecting to Google for authentication");
-
-                navigateToHome();
+                // Just redirect to the OAuth URL - don't try to get user yet
+                window.location.href = data.url;
             }
         } catch (error) {
             setError(error instanceof Error ? error.message : String(error));
             console.log("Unexpected error during Google login:", error);
         }
     };
+    // const loginWithGoogle = async () => {
+    //     console.log("auth context loginWithGoogle");
+
+    //     try {
+    //         const { data, error } = await supabase.auth.signInWithOAuth({ provider: "google" });
+
+    //         if (error) {
+    //             setError(error.message);
+    //             console.log("Error logging in with Google:", error.message);
+    //         } else {
+    //             console.log("Google login successful, data:", data);
+    //             const user = await supabase.auth.getUser()
+    //             console.log("Google login successful, user data:", user);
+    //             const userId = user.data.user?.id;
+    //             console.log(`Google login successful, user ID: ${userId}`);
+    //             const displayName = user.data.user?.user_metadata.full_name || "Google User";
+    //             console.log(`Google login successful, display name: ${displayName}`);
+
+    //             await createAccount(userId || '', displayName, '');  // create account with display name as first name and empty last name
+
+    //             await updateAdminState();
+
+    //             setError(undefined);
+    //             setSuccess("Redirecting to Google for authentication...");
+    //             console.log("Redirecting to Google for authentication");
+
+    //             navigateToHome();
+    //         }
+    //     } catch (error) {
+    //         setError(error instanceof Error ? error.message : String(error));
+    //         console.log("Unexpected error during Google login:", error);
+    //     }
+    // };
     const logout = async () => {
         console.log("auth context logout");
 
@@ -207,12 +294,12 @@ export function AuthContextProvider({ children }: { children: React.ReactNode })
             console.log("Unexpected error during sign-out:", error);
         }
     };
-    
+
     const contextSnapshot: AuthContextType = {
         user, session, isLoggedIn, isAdmin: is_admin, error, success,
 
         getUserId() {
-            return user?.id || null;
+            return user?.id || session?.user?.id || null;
         },
 
         signIn: login,
