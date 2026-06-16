@@ -3,18 +3,24 @@ import { supabase } from "@/lib/supabase-client";
 import type { InstructorRow } from "@/lib/dbTypes";
 import { sanitizeInput } from "../sanitize";
 
-export async function createInstructor(name: string): Promise<void> {
+export type InstructorDataType = {
+    name: string;
+    id: number;
+}
+export async function createInstructor(name: string): Promise<InstructorDataType> {
     [name] = sanitizeInput(name);
     
     const { data, error } = await supabase
         .from('instructor')
-        .insert({ name });
+        .insert({ name })
+        .select()
+        .single();
         
     if (error) {
         throw new Error(`Error creating instructor: ${error.message}`);
     }
 
-    console.log(`Instructor created: ${name}`);
+    return data as InstructorDataType;
 }
 
 export async function getAvailableInstructors(): Promise<InstructorRow[]> {

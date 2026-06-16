@@ -3,6 +3,21 @@ import { supabase } from "../supabase-client";
 import type { CourseRow } from "../dbTypes";
 import { sanitizeInput } from "../sanitize";
 
+export async function createCourse(courseData: Omit<CourseRow, 'id' | 'created_at'>): Promise<CourseRow> {
+    const { data, error } = await supabase
+        .from('course')
+        .insert(courseData)
+        .select()
+        .single();
+
+    if (error) {
+        console.error("Error creating course:", error);
+        throw new Error("Failed to create course");
+    }
+
+    return data as CourseRow;
+}
+
 export async function getCourseById(courseId: number): Promise<CourseRow> {
     const { data, error } = await supabase
         .from('course')
