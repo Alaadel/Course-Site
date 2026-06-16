@@ -1,13 +1,12 @@
-import Button from "@/components/common/Button";
-import HeaderSub from "@/components/common/HeaderSub";
+'use client';
+
+import AdminCourses from "@/components/admin/courses/AdminCourses";
+import { AdminCoursesContextProvider } from "@/store/AdminCoursesContext";
 
 export default function AdminCoursesPage() {
     return (
-        <>
-            <div className="flex items-center justify-between mb-4">
-                <HeaderSub className="text-2xl font-bold" hNumber={2} header="Courses" sub="" />
-                <Button>Add Course</Button>
-            </div>
-        </>
+        <AdminCoursesContextProvider>
+            <AdminCourses />
+        </AdminCoursesContextProvider>
     );
 }
