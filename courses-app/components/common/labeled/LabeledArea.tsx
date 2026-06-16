@@ -1,14 +1,14 @@
 import '@/app/globals.css';
 import { forwardRef } from 'react';
+import TextArea from '../TextArea';
+import Label from '../Label';
 
 const LabeledArea = forwardRef<HTMLTextAreaElement, { label: string; id: string; } & React.TextareaHTMLAttributes<HTMLTextAreaElement>>(
     ({ label, id, ...props }, ref) => {
-        let style = "py-1 w-full border border-gray-300 rounded px-2";
-
         return (
             <div className="main-margin flex flex-col">
-                <label htmlFor={id} className="secondary-text">{label}</label>
-                <textarea {...props} id={id} ref={ref} className={style} />
+                <Label htmlFor={id}>{label}</Label>
+                <TextArea {...props} id={id} ref={ref} />
             </div>
         );
     }

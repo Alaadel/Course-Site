@@ -3,9 +3,9 @@
 import Button from "@/components/common/Button";
 import FeedbackMessage from "@/components/common/FeedbackMessage";
 import HeaderSub from "@/components/common/HeaderSub";
-import LabeledInput from "@/components/common/LabeledInput";
+import LabeledInput from "@/components/common/labeled/LabeledInput";
 import LinkStyled from "@/components/common/LinkStyled";
-import SectionCard from "@/components/common/SectionCard";
+import SectionCard from "@/components/common/containers/SectionCard";
 import { AuthContext } from "@/store/AuthContext";
 import Link from "next/dist/client/link";
 import { useContext, useRef } from "react";

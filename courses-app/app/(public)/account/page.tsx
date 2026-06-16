@@ -6,13 +6,13 @@ import { AuthContext } from "@/store/AuthContext";
 import Link from "next/link";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AccountRow } from "@/lib/dbTypes";
-import SectionCard from '@/components/common/SectionCard';
+import SectionCard from '@/components/common/containers/SectionCard';
 import HeaderSub from '@/components/common/HeaderSub';
-import LabeledInput from '@/components/common/LabeledInput';
+import LabeledInput from '@/components/common/labeled/LabeledInput';
 import Button from '@/components/common/Button';
 import { AccountPageContext, AccountPageContextProvider } from '@/store/AccountPageContext';
 import { getAccountByAuthId, updateName } from '@/lib/tables/account';
-import Modal from '@/components/common/Modal';
+import Modal from '@/components/common/containers/Modal';
 import { supabase } from '@/lib/supabase-client';
 import LinkStyled from '@/components/common/LinkStyled';
 

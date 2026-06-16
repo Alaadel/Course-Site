@@ -1,4 +1,4 @@
-import Modal from "../common/Modal";
+import Modal from "../common/containers/Modal";
 
 export default function ResetPasswordModal({ onCancel }: { onCancel: () => void }) {
 

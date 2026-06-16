@@ -1,15 +1,16 @@
 import Button from "@/components/common/Button";
 import HeaderSub from "@/components/common/HeaderSub";
-import LabeledArea from "@/components/common/LabeledArea";
-import LabeledInput from "@/components/common/LabeledInput";
-import Modal from "@/components/common/Modal";
+import LabeledArea from "@/components/common/labeled/LabeledArea";
+import LabeledInput from "@/components/common/labeled/LabeledInput";
+import Modal from "@/components/common/containers/Modal";
 import { AdminCoursesContext } from "@/store/AdminCoursesContext";
-import { useContext, useRef, useState } from "react";
-import LabeledSelect from "@/components/common/LabeledSelect";
+import { useContext, useEffect, useRef, useState } from "react";
+import LabeledSelect from "@/components/common/labeled/LabeledSelect";
 import ImagePicker from "@/components/common/image-picker/ImagePicker";
 import { uploadImage_ImgBB } from "@/lib/files";
 import { getAvailableInstructors } from "@/lib/tables/instructor";
-import { getAllTags } from "@/lib/tables/tag";
+import { createTag, getAllTags } from "@/lib/tables/tag";
+import TagsList from "@/components/common/fetch-lists/TagsList";
 
 export default function AdminCourses() {
     // context
@@ -19,7 +20,8 @@ export default function AdminCourses() {
     const [instructors, setInstructors] = useState<string[]>([]);
     const [thumbnail, setThumbnail] = useState<File | null>(null);
     const [tags, setTags] = useState<string[]>([]);
-    
+    const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
     // refs
     // const thumbnailRef = useRef<Im>(null);
     const titleRef = useRef<HTMLInputElement>(null);
@@ -27,7 +29,7 @@ export default function AdminCourses() {
     const tagsRef = useRef<HTMLInputElement>(null);
     const priceRef = useRef<HTMLInputElement>(null);
     const instructorRef = useRef<HTMLSelectElement>(null);
-    
+
     // shortcuts
     const isEdt = context.state === 'editing';
     const isAdd = context.state === 'adding';
@@ -53,7 +55,7 @@ export default function AdminCourses() {
             console.error("Error fetching tags:", error);
         }
     }
-    
+
     // handlers
     function handleShowAddCourseModal() {
         context.setState('adding');
@@ -84,7 +86,32 @@ export default function AdminCourses() {
         setThumbnail(file);
     }
 
+    function handleSelectedTags(selectedTags: string[]) {
+        console.log("Selected tags:", selectedTags);
+        setSelectedTags(selectedTags);
+    }
+    async function handleAddTag(tag: string) {
+        if (tags.includes(tag)) {
+            console.log("Tag already exists:", tag);
+            return;
+        }
+
+        try {
+            const newTag = await createTag(tag);
+            setTags([...tags, newTag.name]);
+        } catch (error) {
+            console.error("Error creating tag:", error);
+        }
+    }
+
     // effects
+    useEffect(() => {
+        if (showCourseModal) {
+            fetchInstructors();
+            fetchTags();
+        }
+    }, [showCourseModal]);
+
     return (
         <div className="flex items-center justify-between mb-4">
             <HeaderSub className="text-2xl font-bold" hNumber={2} header="Courses" sub="" />
@@ -96,12 +123,13 @@ export default function AdminCourses() {
                     <div className="grid grid-cols-1 gap-4">
                         <LabeledInput label="Title" id="title" editable={true} type="text" ref={titleRef} />
                         <LabeledArea label="Description" id="description" ref={descriptionRef} />
-                        
+
                         <LabeledInput label="Price" id="price" editable={true} type="number" ref={priceRef} />
-                        <LabeledSelect label="Instructor" id="instructor" options={instructors} ref={instructorRef} allowCustom={true}/>
                         
-                        <LabeledInput label="Tags (comma separated)" id="tags" editable={true} type="text" ref={tagsRef} />
-                        
+                        <LabeledSelect label="Instructor" id="instructor" options={instructors} ref={instructorRef} allowCustom={true} />
+
+                        <TagsList tags={tags} getSelectedTags={handleSelectedTags} allowAdd={true} onAdd={handleAddTag} />
+
                         <ImagePicker label="Thumbnail" id="thumbnail" name="thumbnail" onFileChange={handleFileChange} />
 
                         <div className="flex justify-between gap-2">

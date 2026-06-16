@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useContext, useEffect, useRef } from "react";
 import { AuthContext } from "@/store/AuthContext";
-import SectionCard from "@/components/common/SectionCard";
+import SectionCard from "@/components/common/containers/SectionCard";
 import HeaderSub from "@/components/common/HeaderSub";
 import Button from "@/components/common/Button";
-import LabeledInput from "@/components/common/LabeledInput";
+import LabeledInput from "@/components/common/labeled/LabeledInput";
 import Separator from "@/components/common/Separator";
 import FeedbackMessage from "@/components/common/FeedbackMessage";
 import LinkStyled from "@/components/common/LinkStyled";
