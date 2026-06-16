@@ -15,6 +15,8 @@ import FeedbackMessage, { Feedback } from "@/components/common/FeedbackMessage";
 import { createCourse, getAllCourses } from "@/lib/tables/courses";
 import { InstructorDataType } from "@/lib/tables/instructor";
 import { CourseRow } from "@/lib/dbTypes";
+import CourseList, { CourseDataType } from "@/components/courses/CourseList";
+import AdminCourseCard, { AdminCourseCardData } from "@/components/courses/cards/AdminCourseCard";
 
 export default function AdminCourses() {
     // context
@@ -22,6 +24,8 @@ export default function AdminCourses() {
 
     // state
     const [courses, setCourses] = useState<CourseRow[]>([]);
+    const [adminCourses, setAdminCourses] = useState<CourseDataType<AdminCourseCardData>[]>([]);
+
     const [instructors, setInstructors] = useState<InstructorDataType[]>([]);
     const [thumbnail, setThumbnail] = useState<File | null>(null);
     const [tags, setTags] = useState<string[]>([]);
@@ -47,6 +51,17 @@ export default function AdminCourses() {
         try {
             const response = await getAllCourses();
             setCourses(response);
+
+            const adminCoursesData: CourseDataType<AdminCourseCardData>[] = response.map((course) => ({
+                course,
+                data: {
+                    totalLessons: 0,
+                    isActive: course.active,
+                    totalOrders: 0,
+                }
+            }));
+            setAdminCourses(adminCoursesData);
+
         } catch (error) {
             console.error("Error fetching courses:", error);
         }
@@ -110,6 +125,16 @@ export default function AdminCourses() {
                 });
                 setCourses([...courses, course_response]);
 
+                const adminCourseData: CourseDataType<AdminCourseCardData> = {
+                    course: course_response,
+                    data: {
+                        totalLessons: 0,
+                        isActive: course_response.active,
+                        totalOrders: 0,
+                    }
+                };
+                setAdminCourses([...adminCourses, adminCourseData]);
+
                 console.log("Course created successfully:", course_response);
                 setFeedbackMessage({ type: 'success', message: 'Course created successfully' });
 
@@ -171,6 +196,10 @@ export default function AdminCourses() {
         instructorRef.current = instructor;
     }
 
+    function handleSelectCourse(courseId: number) {
+        console.log("Selected course ID:", courseId);
+    }
+
     // effects
     // initialize effect
     useEffect(() => {
@@ -187,19 +216,18 @@ export default function AdminCourses() {
             setInstructors([]);
             setTags([]);
             setCourses([]);
+            setAdminCourses([]);
             setFeedbackMessage(null);
         }
     }, [showCourseModal]);
+
     // courses effect
     useEffect(() => {
         fetchCourses();
     }, [courses]);
 
     return (
-        <div className="flex items-center justify-between mb-4">
-            <HeaderSub className="text-2xl font-bold" hNumber={2} header="Courses" sub="" />
-            <Button onClick={handleShowAddCourseModal}>Add Course</Button>
-
+        <div>
             <Modal open={showCourseModal} onClose={handleCloseModal}>
                 <form onSubmit={handleSubmitModal}>
                     <HeaderSub hNumber={3} header={isAdd ? "Add Course" : "Edit Course"} sub="" />
@@ -224,6 +252,13 @@ export default function AdminCourses() {
                     </div>
                 </form>
             </Modal>
+
+            <div className="flex items-center justify-between mb-4">
+                <HeaderSub className="text-2xl font-bold" hNumber={2} header="Courses" sub="" />
+                <Button onClick={handleShowAddCourseModal}>Add Course</Button>
+            </div>
+
+            <CourseList<AdminCourseCardData> coursesData={adminCourses} onSelectCourse={handleSelectCourse} CardComponent={AdminCourseCard} />
         </div>
     );
 }

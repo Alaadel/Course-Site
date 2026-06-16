@@ -1,7 +1,7 @@
 import { Order_ } from "@/types/Order";
 import { getCourse } from "@/lib/tables/courses";
 import { useEffect, useState } from "react";
-import CourseCard from "../courses/CourseCard";
+import ViewerCourseCard from "../courses/cards/ViewerCourseCard";
 import Course from "@/types/Course";
 
 export default function Order({ order }: { order: Order_ }) {
@@ -25,7 +25,7 @@ export default function Order({ order }: { order: Order_ }) {
     return (
         <>
             <h1>Order Placed on {order.createdAt.toDateString()}</h1>
-            {course && <CourseCard courseRow={course.info} />}
+            {course && <ViewerCourseCard courseRow={course.info} />}
             <p>Amount Paid: ${order.amountPaid}</p>
         </>
     );

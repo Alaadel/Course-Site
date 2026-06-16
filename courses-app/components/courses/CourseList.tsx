@@ -1,23 +1,36 @@
 import { CourseRow } from "@/lib/dbTypes";
-import CourseCard from "./CourseCard";
 import styles from "./CourseList.module.css";
 
-export default function CourseList({ title, courseRows, onSelectCourse }: { title: string, courseRows?: CourseRow[], onSelectCourse: (courseId: number) => void }) {
-    
+export interface CourseDataType<T> {
+    course: CourseRow;
+    data: T;
+}
+
+export interface ICourseCardComponent<T> {
+    courseData: CourseDataType<T>;
+    onClick?: (courseId: number, clickType: string) => void;
+}
+
+export default function CourseList<T>({
+    coursesData,
+    onSelectCourse,
+    CardComponent
+}: {
+    coursesData?: CourseDataType<T>[],
+    onSelectCourse: (courseId: number) => void,
+    CardComponent: React.ComponentType<ICourseCardComponent<T>>
+}) {
     return (
-        <>
-            <div className={styles.CourseList}>
-                <h2>{title}</h2>
-                <button>View All</button>
-                
-                <ul>
-                    {courseRows?.map((courseCard) => (
-                        <li key={courseCard.id}>
-                            <CourseCard courseRow={courseCard} onClick={() => onSelectCourse(courseCard.id)} />
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        </>
-    )
+        <div className={styles.CourseList}>
+            <ul>
+                {coursesData?.map((courseData) => (
+                    <li key={courseData.course.id}>
+                        <CardComponent
+                            courseData={courseData}
+                            onClick={(courseId, clickType) => onSelectCourse(courseId)}/>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 }

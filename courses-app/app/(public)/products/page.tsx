@@ -15,7 +15,7 @@ export default function Products() {
             <SearchProductsContext.Provider value={{ courseRows: [], setCourses: () => {} }}>
                 <SearchProducts setContextCourses={(courseRows: CourseRow[]) => context?.setCourses(courseRows) || (() => {})} />
                 <header>Showing {context?.courseRows.length} products</header>
-                <CourseList title="Products" courseRows={context?.courseRows || []} onSelectCourse={() => {}} />
+                <CourseList title="Products" coursesData={context?.courseRows || []} onSelectCourse={() => {}} />
             </SearchProductsContext.Provider>
         </>
     );

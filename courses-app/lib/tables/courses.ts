@@ -3,6 +3,8 @@ import { supabase } from "../supabase-client";
 import type { CourseRow } from "../dbTypes";
 import { sanitizeInput } from "../sanitize";
 
+import type { AdminCourseCardData } from "@/components/courses/cards/AdminCourseCard";
+
 export async function createCourse(courseData: Omit<CourseRow, 'id' | 'created_at'>): Promise<CourseRow> {
     const { data, error } = await supabase
         .from('course')
@@ -78,7 +80,7 @@ export async function getPopularCourses(limit: number): Promise<CourseRow[]> {
 
 export async function getSearchCourses(searchTerm: string, tags: string[], priceFrom?: number, priceTo?: number): Promise<CourseRow[]> {
     [searchTerm, ...tags] = sanitizeInput(searchTerm, ...tags);
-    
+
     let query = supabase
         .from('course')
         .select('*')
@@ -106,6 +108,28 @@ export async function getSearchCourses(searchTerm: string, tags: string[], price
     return data as CourseRow[];
 }
 
+export async function getCourseAdminData(courseId: number): Promise<AdminCourseCardData> {
+    console.log("Fetching admin data for course ID:", courseId);
+
+    const { data, error } = await supabase
+        .from('course')
+        .select(`id, active,
+            total_lessons:lesson(id),
+            total_orders:enrollment(course_id)`)
+        .eq('id', courseId)
+        .single();
+
+    if (error) {
+        console.error("Error fetching course admin data:", error);
+        throw new Error("Failed to fetch course admin data");
+    }
+
+    return {
+        totalLessons: data.total_lessons.length,
+        isActive: data.active,
+        totalOrders: data.total_orders.length
+    } as AdminCourseCardData;
+}
 
 export async function getLessonContent(lessonId: number): Promise<string> {
     const { data, error } = await supabase
