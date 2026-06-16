@@ -13,11 +13,11 @@ export interface ICourseCardComponent<T> {
 
 export default function CourseList<T>({
     coursesData,
-    onSelectCourse,
+    onClickCourse: onSelectCourse,
     CardComponent
 }: {
     coursesData?: CourseDataType<T>[],
-    onSelectCourse: (courseId: number) => void,
+    onClickCourse: (courseId: number, clickType: string) => void,
     CardComponent: React.ComponentType<ICourseCardComponent<T>>
 }) {
     return (
@@ -27,7 +27,7 @@ export default function CourseList<T>({
                     <li key={courseData.course.id}>
                         <CardComponent
                             courseData={courseData}
-                            onClick={(courseId, clickType) => onSelectCourse(courseId)}/>
+                            onClick={(courseId, clickType) => onSelectCourse(courseId, clickType)}/>
                     </li>
                 ))}
             </ul>

@@ -36,7 +36,7 @@ export default function Courses({ account }: { account: AccountRow }) {
             <h1>Courses Page</h1>
             <p>This is where you can view your courses.</p>
             
-            <CourseList title="Your Courses" courseCards={courseCards} onSelectCourse={handleSelectCourse} />
+            <CourseList title="Your Courses" courseCards={courseCards} onClickCourse={handleSelectCourse} />
 
                 {selectedCourseId && (
                     <CourseViewer courseId={selectedCourseId} progress={progress} />

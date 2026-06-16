@@ -30,6 +30,9 @@ export default function AdminCourseCard({ courseData, onClick }: ICourseCardComp
             console.error("Error fetching course admin data:", course.id, error);
         }
     }
+    function handleClick(type: string) {
+        onClick?.(course.id, type);
+    }
 
     useEffect(() => {
         fetchCourseAdminData();
@@ -52,7 +55,12 @@ export default function AdminCourseCard({ courseData, onClick }: ICourseCardComp
                 <span>{data.totalLessons} lessons</span>
                 <span>{data.totalOrders} orders</span>
             </div>
-            <Button onClick={() => onClick?.(course.id, "edit")}>Edit</Button>
+
+            <div className="flex gap-2">
+                <Button onClick={() => handleClick("edit")}>Edit</Button>
+                <Button onClick={() => handleClick("toggle")}>{data.isActive ? 'Deactivate' : 'Activate'}</Button>
+                <Button onClick={() => handleClick("delete")}>Delete</Button>
+            </div>
         </SectionCard>
     );
 }

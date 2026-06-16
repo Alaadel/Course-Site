@@ -12,7 +12,7 @@ import { createTag, getAllTags } from "@/lib/tables/tag";
 import TagsList from "@/components/common/fetch-lists/TagsList";
 import InstructorsList from "@/components/common/fetch-lists/InstructorsList";
 import FeedbackMessage, { Feedback } from "@/components/common/FeedbackMessage";
-import { createCourse, getAllCourses } from "@/lib/tables/courses";
+import { createCourse, deleteCourse, getAllCourses, toggleCourseActiveStatus } from "@/lib/tables/courses";
 import { InstructorDataType } from "@/lib/tables/instructor";
 import { CourseRow } from "@/lib/dbTypes";
 import CourseList, { CourseDataType } from "@/components/courses/CourseList";
@@ -88,6 +88,10 @@ export default function AdminCourses() {
         const instructor = instructors.find((i) => i.name === instructorName);
         return instructor ? instructor.id : null;
     }
+    const getInstructorName = (instructorId: number | null): string | null => {
+        const instructor = instructors.find((i) => i.id === instructorId);
+        return instructor ? instructor.name : null;
+    }
 
     // handlers
     function handleShowAddCourseModal() {
@@ -118,7 +122,7 @@ export default function AdminCourses() {
                     instructor_id: instructorId,
                     tags: selectedTags,
                     thumbnail_url: thumbnailUrl,
-                    active: true,
+                    active: false,  // no lessons yet
                 });
                 setCourses([...courses, course_response]);
 
@@ -192,18 +196,32 @@ export default function AdminCourses() {
         setFormValues(prev => ({ ...prev, instructorName: instructor }));
     }
 
-    function handleSelectCourse(courseId: number) {
+    async function handleClickCourse(courseId: number, clickType: string) {
         const selectedCourse = courses.find((c) => c.id === courseId) || null;
-        if (selectedCourse) {
-            context.setSelectedCourse(selectedCourse);
-            handleShowEditCourseModal(selectedCourse);
+        if (!selectedCourse) {
+            console.error("Selected course not found for ID:", courseId);
+            return;
+        }
+
+        try {
+            if (clickType === "edit") {
+                context.setSelectedCourse(selectedCourse);
+                handleShowEditCourseModal(selectedCourse);
+            } else if (clickType === "toggle") {
+                await toggleCourseActiveStatus(courseId, selectedCourse.active);
+            } else if (clickType === "delete") {
+                await deleteCourse(courseId);
+            }
+        } catch (error) {
+            console.error(`Error handling course click (${clickType}):`, error);
         }
     }
 
     // populate form when editing — reactive to both selectedCourse and instructors loading
     useEffect(() => {
         if (isEdt && context.selectedCourse) {
-            const instructorName = instructors.find(i => i.id === context.selectedCourse?.instructor_id)?.name || '';
+            const instructorName = getInstructorName(context.selectedCourse.instructor_id) || '';
+
             setFormValues({
                 title: context.selectedCourse.title || '',
                 description: context.selectedCourse.description || '',
@@ -278,7 +296,7 @@ export default function AdminCourses() {
                 <Button onClick={handleShowAddCourseModal}>Add Course</Button>
             </div>
 
-            <CourseList<AdminCourseCardData> coursesData={adminCourses} onSelectCourse={handleSelectCourse} CardComponent={AdminCourseCard} />
+            <CourseList<AdminCourseCardData> coursesData={adminCourses} onClickCourse={handleClickCourse} CardComponent={AdminCourseCard} />
         </div>
     );
 }

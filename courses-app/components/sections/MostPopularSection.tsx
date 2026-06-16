@@ -24,7 +24,7 @@ export default function MostPopularSection() {
     
     return (
         <>
-            <CourseList title="Most Popular Courses" courseCards={courses} onSelectCourse={handleSelectCourse} />
+            <CourseList title="Most Popular Courses" courseCards={courses} onClickCourse={handleSelectCourse} />
         </>
     )
 }

@@ -5,6 +5,7 @@ import { sanitizeInput } from "../sanitize";
 
 import type { AdminCourseCardData } from "../dbTypes";
 import { getCourseIndexAndProgress } from "./progress";
+import { deleteInstructorIfUnused } from "./instructor";
 
 export async function createCourse(courseData: Omit<CourseRow, 'id' | 'created_at'>): Promise<CourseRow> {
     const { data, error } = await supabase
@@ -215,4 +216,43 @@ export async function getLessonContent(lessonId: number): Promise<string> {
     }
 
     return data.content as string;
+}
+
+export async function toggleCourseActiveStatus(courseId: number, isActive: boolean): Promise<void> {
+    const { error } = await supabase
+        .from('course')
+        .update({ active: !isActive })
+        .eq('id', courseId);
+
+    if (error) {
+        console.error("Error toggling course active status:", error);
+        throw new Error("Failed to toggle course active status");
+    }
+
+    console.log("Course active status toggled successfully:", courseId, "New status:", !isActive);
+}
+
+export async function deleteCourse(courseId: number): Promise<void> {
+    const { data, error } = await supabase
+        .from('course')
+        .delete()
+        .eq('id', courseId)
+        .select('*');
+
+    if (error) {
+        console.error("Error deleting course:", error);
+        throw new Error("Failed to delete course");
+    }
+
+    const instructorId = data[0]?.instructor_id;
+    if (instructorId) {
+        try {
+            await deleteInstructorIfUnused(instructorId);
+        } catch (error) {
+            console.error(`Error deleting instructor with id ${instructorId}:`, error);
+            // Not throwing error here because course deletion was successful, and instructor might still be used by other courses
+        }
+    }
+    
+    console.log("Course deleted successfully:", courseId);
 }

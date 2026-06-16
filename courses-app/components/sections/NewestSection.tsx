@@ -24,7 +24,7 @@ export default function NewestSection() {
     
     return (
         <>
-            <CourseList title="Newest Courses" courseCards={courseCards} onSelectCourse={handleSelectCourse} />
+            <CourseList title="Newest Courses" courseCards={courseCards} onClickCourse={handleSelectCourse} />
         </>
     )
 }
