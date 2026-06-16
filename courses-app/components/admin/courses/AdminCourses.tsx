@@ -4,7 +4,7 @@ import LabeledArea from "@/components/common/labeled/LabeledArea";
 import LabeledInput from "@/components/common/labeled/LabeledInput";
 import Modal from "@/components/common/containers/Modal";
 import { AdminCoursesContext } from "@/store/AdminCoursesContext";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ImagePicker from "@/components/common/image-picker/ImagePicker";
 import { uploadImage_ImgBB } from "@/lib/files";
 import { createInstructor, getAvailableInstructors } from "@/lib/tables/instructor";
@@ -16,7 +16,8 @@ import { createCourse, getAllCourses } from "@/lib/tables/courses";
 import { InstructorDataType } from "@/lib/tables/instructor";
 import { CourseRow } from "@/lib/dbTypes";
 import CourseList, { CourseDataType } from "@/components/courses/CourseList";
-import AdminCourseCard, { AdminCourseCardData } from "@/components/courses/cards/AdminCourseCard";
+import AdminCourseCard from "@/components/courses/cards/AdminCourseCard";
+import { AdminCourseCardData } from "@/lib/dbTypes";
 
 export default function AdminCourses() {
     // context
@@ -25,20 +26,17 @@ export default function AdminCourses() {
     // state
     const [courses, setCourses] = useState<CourseRow[]>([]);
     const [adminCourses, setAdminCourses] = useState<CourseDataType<AdminCourseCardData>[]>([]);
-
     const [instructors, setInstructors] = useState<InstructorDataType[]>([]);
     const [thumbnail, setThumbnail] = useState<File | null>(null);
     const [tags, setTags] = useState<string[]>([]);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [feedbackMessage, setFeedbackMessage] = useState<Feedback | null>(null);
-
-    // refs
-    // const thumbnailRef = useRef<Im>(null);
-    const titleRef = useRef<HTMLInputElement>(null);
-    const descriptionRef = useRef<HTMLTextAreaElement>(null);
-    const tagsRef = useRef<HTMLInputElement>(null);
-    const priceRef = useRef<HTMLInputElement>(null);
-    const instructorRef = useRef<string | null>(null);
+    const [formValues, setFormValues] = useState({
+        title: '',
+        description: '',
+        price: '',
+        instructorName: '',
+    });
 
     // shortcuts
     const isEdt = context.state === 'editing';
@@ -94,9 +92,8 @@ export default function AdminCourses() {
     // handlers
     function handleShowAddCourseModal() {
         context.setState('adding');
-        console.log(context);
     }
-    function handleShowEditCourseModal() {
+    function handleShowEditCourseModal(course: CourseRow) {
         context.setState('editing');
     }
     async function handleSubmitModal(e: React.SubmitEvent<HTMLFormElement>) {
@@ -107,7 +104,7 @@ export default function AdminCourses() {
                 const thumbnailUrl = await uploadImage_ImgBB(thumbnail);
                 console.log("thumbnailUrl", thumbnailUrl);
 
-                const instructorId = getInstructorId(instructorRef.current || '');
+                const instructorId = getInstructorId(formValues.instructorName);
                 if (instructorId === null) {
                     console.error("Invalid instructor selected");
                     setFeedbackMessage({ type: 'error', message: 'Invalid instructor selected' });
@@ -115,9 +112,9 @@ export default function AdminCourses() {
                 }
 
                 const course_response = await createCourse({
-                    title: titleRef.current?.value || '',
-                    description: descriptionRef.current?.value || '',
-                    price: parseFloat(priceRef.current?.value || '0'),
+                    title: formValues.title,
+                    description: formValues.description,
+                    price: parseFloat(formValues.price || '0'),
                     instructor_id: instructorId,
                     tags: selectedTags,
                     thumbnail_url: thumbnailUrl,
@@ -192,56 +189,79 @@ export default function AdminCourses() {
         }
     }
     function handleSelectedInstructor(instructor: string) {
-        console.log("Selected instructor:", instructor);
-        instructorRef.current = instructor;
+        setFormValues(prev => ({ ...prev, instructorName: instructor }));
     }
 
     function handleSelectCourse(courseId: number) {
-        console.log("Selected course ID:", courseId);
+        const selectedCourse = courses.find((c) => c.id === courseId) || null;
+        if (selectedCourse) {
+            context.setSelectedCourse(selectedCourse);
+            handleShowEditCourseModal(selectedCourse);
+        }
     }
 
+    // populate form when editing — reactive to both selectedCourse and instructors loading
+    useEffect(() => {
+        if (isEdt && context.selectedCourse) {
+            const instructorName = instructors.find(i => i.id === context.selectedCourse?.instructor_id)?.name || '';
+            setFormValues({
+                title: context.selectedCourse.title || '',
+                description: context.selectedCourse.description || '',
+                price: context.selectedCourse.price?.toString() || '',
+                instructorName,
+            });
+            setSelectedTags(context.selectedCourse.tags || []);
+        }
+    }, [context.selectedCourse, instructors, isEdt]);
+
+    // clear form when modal closes
+    useEffect(() => {
+        if (!showCourseModal) {
+            console.log("Clearing form values and selected tags");
+            setFormValues({ title: '', description: '', price: '', instructorName: '' });
+            setSelectedTags([]);
+        }
+    }, [showCourseModal]);
+
+    // fetch courses on mount
+    useEffect(() => {
+        fetchCourses();
+    }, []);
+
     // effects
-    // initialize effect
+    // initialize effect — fetch instructors/tags when modal opens, clean them up on close
     useEffect(() => {
         setFeedbackMessage(null);
 
         if (showCourseModal) {
             fetchInstructors();
             fetchTags();
-            fetchCourses();
         }
 
         // cleanup
         return () => {
             setInstructors([]);
             setTags([]);
-            setCourses([]);
-            setAdminCourses([]);
             setFeedbackMessage(null);
         }
     }, [showCourseModal]);
-
-    // courses effect
-    useEffect(() => {
-        fetchCourses();
-    }, [courses]);
 
     return (
         <div>
             <Modal open={showCourseModal} onClose={handleCloseModal}>
                 <form onSubmit={handleSubmitModal}>
-                    <HeaderSub hNumber={3} header={isAdd ? "Add Course" : "Edit Course"} sub="" />
+                    <HeaderSub hNumber={3} header={isAdd ? "Add Course" : `Edit: ${context.selectedCourse?.title}`} sub="" />
                     <div className="grid grid-cols-1 gap-4">
-                        <LabeledInput label="Title" id="title" editable={true} type="text" ref={titleRef} />
-                        <LabeledArea label="Description" id="description" ref={descriptionRef} />
+                        <LabeledInput label="Title" id="title" editable={true} type="text" value={formValues.title} onChange={e => setFormValues(prev => ({ ...prev, title: e.target.value }))} />
+                        <LabeledArea label="Description" id="description" value={formValues.description} onChange={e => setFormValues(prev => ({ ...prev, description: e.target.value }))} />
 
-                        <LabeledInput label="Price" id="price" editable={true} type="number" ref={priceRef} />
+                        <LabeledInput label="Price" id="price" editable={true} type="number" value={formValues.price} onChange={e => setFormValues(prev => ({ ...prev, price: e.target.value }))} />
 
-                        <InstructorsList instructors={instructors} getSelectedInstructor={handleSelectedInstructor} onAddInstructor={handleAddInstructor} />
+                        <InstructorsList instructors={instructors} value={formValues.instructorName} getSelectedInstructor={handleSelectedInstructor} onAddInstructor={handleAddInstructor} />
 
                         <TagsList tags={tags} getSelectedTags={handleSelectedTags} allowAdd={true} onAdd={handleAddTag} />
 
-                        <ImagePicker label="Thumbnail" id="thumbnail" name="thumbnail" onFileChange={handleFileChange} />
+                        <ImagePicker label="Thumbnail" id="thumbnail" name="thumbnail" img_src={context.selectedCourse?.thumbnail_url || ""} onFileChange={handleFileChange} />
 
                         <FeedbackMessage feedback={feedbackMessage} />
 

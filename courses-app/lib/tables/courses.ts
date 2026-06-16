@@ -1,9 +1,10 @@
 import { supabase } from "../supabase-client";
 
-import type { CourseRow } from "../dbTypes";
+import type { CourseRow, OrderCourseCardData, ViewerCourseCardData } from "../dbTypes";
 import { sanitizeInput } from "../sanitize";
 
-import type { AdminCourseCardData } from "@/components/courses/cards/AdminCourseCard";
+import type { AdminCourseCardData } from "../dbTypes";
+import { getCourseIndexAndProgress } from "./progress";
 
 export async function createCourse(courseData: Omit<CourseRow, 'id' | 'created_at'>): Promise<CourseRow> {
     const { data, error } = await supabase
@@ -108,14 +109,82 @@ export async function getSearchCourses(searchTerm: string, tags: string[], price
     return data as CourseRow[];
 }
 
+
+export async function getCourseViewerData(courseId: number, userId: string): Promise<ViewerCourseCardData> {
+    console.log("Fetching viewer data for course ID:", courseId, "and user ID:", userId);
+
+    [userId] = sanitizeInput(userId);
+
+    const { data, error } = await supabase
+        .from('enrollment')
+        .select('course_id')
+        .eq('course_id', courseId)
+        .eq('account_id', userId)
+        .single();
+
+    if (error && error.code !== 'PGRST116') { // Ignore "No rows found" error
+        console.error("Error fetching course viewer data:", error);
+        throw new Error("Failed to fetch course viewer data");
+    }
+
+    return {
+        isOwned: !!data
+    } as ViewerCourseCardData;
+}
+
+export async function getCourseOrderData(courseId: number, userId: string): Promise<OrderCourseCardData> {
+    console.log("Fetching order data for course ID:", courseId, "and user ID:", userId);
+
+    [userId] = sanitizeInput(userId);
+
+    const { data, error } = await supabase
+        .from('enrollment')
+        .select('created_at, course:course_id(price)')
+        .eq('course_id', courseId)
+        .eq('account_id', userId)
+        .single();
+
+    if (error) {
+        console.error("Error fetching course order data:", error);
+        throw new Error("Failed to fetch course order data");
+    }
+
+    return {
+        purchasedAt: data.created_at,
+        price: data.course.price
+    } as OrderCourseCardData;
+}
+
+export async function getCourseProgressData(courseId: number, userId: string): Promise<{ lessonsFinished: number; totalLessons: number }> {
+    console.log("Fetching progress data for course ID:", courseId, "and user ID:", userId);
+
+    const response = await getCourseIndexAndProgress(userId, courseId);
+
+    if (!response) {
+        console.error("Error fetching course progress data: No response from getCourseIndexAndProgress");
+        throw new Error("Failed to fetch course progress data");
+    }
+
+    return {
+        lessonsFinished: response.lesson_completed_count,
+        totalLessons: response.lesson_count,
+    };
+}
+
 export async function getCourseAdminData(courseId: number): Promise<AdminCourseCardData> {
     console.log("Fetching admin data for course ID:", courseId);
 
     const { data, error } = await supabase
         .from('course')
-        .select(`id, active,
-            total_lessons:lesson(id),
-            total_orders:enrollment(course_id)`)
+        .select(`
+            id,
+            active,
+            total_orders:enrollment(course_id),
+            section(
+                id,
+                lesson(id)
+            )
+        `)
         .eq('id', courseId)
         .single();
 
@@ -124,8 +193,10 @@ export async function getCourseAdminData(courseId: number): Promise<AdminCourseC
         throw new Error("Failed to fetch course admin data");
     }
 
+    const totalLessons = data.section.reduce((acc: number, s: { lesson: { id: number }[] }) => acc + s.lesson.length, 0);
+
     return {
-        totalLessons: data.total_lessons.length,
+        totalLessons,
         isActive: data.active,
         totalOrders: data.total_orders.length
     } as AdminCourseCardData;

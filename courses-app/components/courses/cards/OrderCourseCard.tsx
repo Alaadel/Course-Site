@@ -4,11 +4,7 @@ import "@/app/globals.css";
 import Button from "@/components/common/Button";
 import { ICourseCardComponent } from "../CourseList";
 import SectionCard from "@/components/common/containers/SectionCard";
-
-export type OrderCourseCardData = {
-    totalLessons: number;
-    purchasedAt: string;
-}
+import { OrderCourseCardData } from "@/lib/dbTypes";
 
 export default function OrderCourseCard({ courseData, onClick }: ICourseCardComponent<OrderCourseCardData>) {
     const { course } = courseData;
@@ -26,8 +22,7 @@ export default function OrderCourseCard({ courseData, onClick }: ICourseCardComp
             <h2>{course.title}</h2>
             <p className="secondary-text">{course.description}</p>
             <div className="flex gap-4 text-sm secondary-text">
-                <span>${course.price}</span>
-                <span>{data.totalLessons} lessons</span>
+                <span>${data.price}</span>
                 <span>Purchased: {new Date(data.purchasedAt).toLocaleDateString()}</span>
             </div>
             <Button onClick={() => onClick?.(course.id, "open")}>Open Course</Button>

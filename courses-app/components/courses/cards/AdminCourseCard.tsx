@@ -4,12 +4,9 @@ import "@/app/globals.css";
 import Button from "@/components/common/Button";
 import { ICourseCardComponent } from "../CourseList";
 import SectionCard from "@/components/common/containers/SectionCard";
-
-export type AdminCourseCardData = {
-    totalOrders: number;
-    isActive: boolean;
-    totalLessons: number;
-}
+import { AdminCourseCardData } from "@/lib/dbTypes";
+import { getCourseAdminData } from "@/lib/tables/courses";
+import { useEffect } from "react";
 
 export default function AdminCourseCard({ courseData, onClick }: ICourseCardComponent<AdminCourseCardData>) {
     const { course } = courseData;
@@ -18,6 +15,25 @@ export default function AdminCourseCard({ courseData, onClick }: ICourseCardComp
     if (!course || !data) {
         return <p className="text-red">Invalid course data.</p>;
     }
+
+    async function fetchCourseAdminData() {
+        try {
+            const response = await getCourseAdminData(course.id);
+            if (!response) {
+                console.error("Error fetching course admin data: No response from getCourseAdminData");
+                return;
+            }
+
+            // Update the courseData with the fetched data
+            courseData.data = response;
+        } catch (error) {
+            console.error("Error fetching course admin data:", course.id, error);
+        }
+    }
+
+    useEffect(() => {
+        fetchCourseAdminData();
+    }, [course.id]);
 
     return (
         <SectionCard>

@@ -4,10 +4,7 @@ import "@/app/globals.css";
 import Button from "@/components/common/Button";
 import { ICourseCardComponent } from "../CourseList";
 import SectionCard from "@/components/common/containers/SectionCard";
-
-export type ViewerCourseCardData = {
-    isOwned: boolean;
-}
+import { ViewerCourseCardData } from "@/lib/dbTypes";
 
 export default function ViewerCourseCard({ courseData, onClick }: ICourseCardComponent<ViewerCourseCardData>) {
     const { course } = courseData;

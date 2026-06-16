@@ -4,11 +4,7 @@ import "@/app/globals.css";
 import Button from "@/components/common/Button";
 import { ICourseCardComponent } from "../CourseList";
 import SectionCard from "@/components/common/containers/SectionCard";
-
-export type ProgressCourseCardData = {
-    lessonsFinished: number;
-    totalLessons: number;
-}
+import { ProgressCourseCardData } from "@/lib/dbTypes";
 
 export default function ProgressCourseCard({ courseData, onClick }: ICourseCardComponent<ProgressCourseCardData>) {
     const { course } = courseData;

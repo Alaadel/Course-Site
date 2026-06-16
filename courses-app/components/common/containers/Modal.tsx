@@ -1,4 +1,6 @@
-import { useEffect, useRef } from 'react';
+'use client';   // client only, to avoid SSR errors
+
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 /*
@@ -10,8 +12,12 @@ import { createPortal } from 'react-dom';
 export default function Modal({ children, open, onClose, className = '' }: { children: React.ReactNode; open: boolean; onClose?: () => void; className?: string }) {
     let style = `modal center-screen max-w-md w-full p-8 rounded-xl ${className}`;
     
-    // giving access to dialog element so it can be controlled programmatically
     const dialog = useRef<HTMLDialogElement>(null);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
     
     // can use 'open' directly on dialog, but it will lose the automatic dim shadow. 
     // So using useEffect instead to control it programmatically
@@ -32,6 +38,8 @@ export default function Modal({ children, open, onClose, className = '' }: { chi
     }, [open]);
 
     // using portal to allow injecting the modal into an element with id="modal" (or body, if not found)
+    if (!mounted) return null;
+
     return createPortal(
         <dialog ref={dialog} className={style} onClose={onClose}>
             {children}

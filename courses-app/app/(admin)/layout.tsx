@@ -25,25 +25,25 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className="h-full antialiased">
-            <body>
-                <HeaderSub className="m-8" hNumber={1} header="Admin Dashboard" sub="" />
+        <>
+            <HeaderSub className="m-8" hNumber={1} header="Admin Dashboard" sub="" />
 
-                <div className="m-8 flex gap-8">
-                    <div className="w-1/5">
-                        <AdminSidebar items={[
-                            { href: "/", label: "Website Home" },
-                            { href: "/admin", label: "Dashboard" },
-                            { href: "/admin/users", label: "Users" },
-                            { href: "/admin/courses", label: "Courses" },
-                            { href: "/admin/sales", label: "Sales" },
-                        ]} />
-                    </div>
-                    <div className="flex-1 mx-8">
-                        {children}
-                    </div>
+            <div className="m-8 flex gap-8">
+                <div className="w-1/5">
+                    <AdminSidebar items={[
+                        { href: "/", label: "Website Home" },
+                        { href: "/admin", label: "Dashboard" },
+                        { href: "/admin/users", label: "Users" },
+                        { href: "/admin/courses", label: "Courses" },
+                        { href: "/admin/sales", label: "Sales" },
+                    ]} />
                 </div>
-            </body>
-        </html>
+                <div className="flex-1 mx-8">
+                    {children}
+                </div>
+            </div>
+
+            <div id="modal"></div>  {/* this is where the modal will be injected, it is placed here to be a sibling of the main content, so that it can overlay it. */}
+        </>
     );
 }

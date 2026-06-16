@@ -23,3 +23,19 @@ export type EnrollmentOrder = {
     created_at: string;
     price: number;
 }
+export type ViewerCourseCardData = {
+    isOwned: boolean;
+};export type ProgressCourseCardData = {
+    lessonsFinished: number;
+    totalLessons: number;
+};
+export type OrderCourseCardData = {
+    purchasedAt: string;
+    price: number;
+};
+export type AdminCourseCardData = {
+    totalOrders: number;
+    isActive: boolean;
+    totalLessons: number;
+};
+
